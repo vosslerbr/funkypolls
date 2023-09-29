@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // TODO update with real URL
   res.status(200).json({
-    resultsUrl: `http://localhost:3000/poll/results/${_id.toString()}`,
-    voteUrl: `http://localhost:3000/poll/vote/${_id.toString()}`,
+    resultsUrl: `http://localhost:3000/results/${_id.toString()}`,
+    voteUrl: `http://localhost:3000/vote/${_id.toString()}`,
   });
 }

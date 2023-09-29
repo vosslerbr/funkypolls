@@ -1,6 +1,7 @@
 import Head from "next/head";
 
 import Link from "next/link";
+import { Button } from "primereact/button";
 
 export default function Home() {
   return (
@@ -13,7 +14,10 @@ export default function Home() {
       </Head>
       <main>
         <h1>FunkyPolls</h1>
-        <Link href="/poll/create">Create a poll</Link>
+        <p>Welcome to FunkyPolls!</p>
+        <Link href="/create">
+          <Button label="Create a poll" />
+        </Link>
       </main>
     </>
   );

@@ -2,28 +2,36 @@ import axios from "axios";
 import { set } from "mongoose";
 import Head from "next/head";
 import Link from "next/link";
+import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import { InputText } from "primereact/inputtext";
+import { Nullable } from "primereact/ts-helpers";
 import { useState } from "react";
 
 export default function Poll() {
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState<string[]>([""]);
-  const [expiration, setExpiration] = useState("");
+  const [expiration, setExpiration] = useState<Nullable<Date>>(null);
   const [links, setLinks] = useState<null | { resultsUrl: string; voteUrl: string }>(null);
 
   const handleSubmit = async () => {
-    try {
-      const { data } = await axios.post("/api/poll", {
-        poll: {
-          question,
-          expiration,
-        },
-        answers,
-      });
+    console.log(question);
+    console.log(answers);
+    console.log(expiration);
 
-      setLinks(data);
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   const { data } = await axios.post("/api/poll", {
+    //     poll: {
+    //       question,
+    //       expiration,
+    //     },
+    //     answers,
+    //   });
+
+    //   setLinks(data);
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
   return (
     <>
@@ -36,46 +44,41 @@ export default function Poll() {
       <main>
         {links ? (
           <>
-            <Link href={links.resultsUrl}>Results</Link>
+            <Link href={links.resultsUrl}>
+              <Button label="Results" />
+            </Link>
             <p>{links.resultsUrl}</p>
-            <Link href={links.voteUrl}>Vote</Link>
+            <Link href={links.voteUrl}>
+              <Button label="Vote" />
+            </Link>
             <p>{links.voteUrl}</p>
           </>
         ) : (
-          <>
+          <div className="flex flex-column gap-4">
             <h1>Create a poll</h1>
-            <input
-              type="text"
+            <InputText
               placeholder="Question"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             />
-            <input
-              type="text"
+            <InputText
               placeholder="Answer"
               value={answers[0]}
               onChange={(e) => setAnswers([e.target.value])}
             />
-            <input
-              type="text"
+            <InputText
               placeholder="Answer"
               value={answers[1]}
               onChange={(e) => setAnswers([answers[0], e.target.value])}
             />
-            <input
-              type="text"
+            <InputText
               placeholder="Answer"
               value={answers[2]}
               onChange={(e) => setAnswers([answers[0], answers[1], e.target.value])}
             />
-            <input
-              type="date"
-              placeholder="Expiration"
-              value={expiration}
-              onChange={(e) => setExpiration(e.target.value)}
-            />
-            <button onClick={handleSubmit}>Create</button>
-          </>
+            <Calendar value={expiration} onChange={(e) => setExpiration(e.value)} />
+            <Button onClick={handleSubmit} label="Create" />
+          </div>
         )}
       </main>
     </>
