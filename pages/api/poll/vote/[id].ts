@@ -1,9 +1,13 @@
 import Answer, { IAnswer } from "@/models/Answer";
 import Poll, { IPoll } from "@/models/Poll";
+import { PollGetResponse } from "@/types";
 import dbConnect from "@/utils/dbConnect";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<PollGetResponse | string>
+) {
   if (req.method !== "PUT") return res.status(405).send("Method Not Allowed");
 
   await dbConnect();
@@ -21,5 +25,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Find the answers that match the poll's ID and populate them
   const answers: IAnswer[] = await Answer.find({ poll: poll._id });
 
-  res.status(200).json({ poll, answers });
+  res.status(200).json({
+    poll,
+    answers,
+    links: {
+      resultsUrl: `${process.env.BASE_URL}/results/${poll._id.toString()}`,
+      voteUrl: `${process.env.BASE_URL}/vote/${poll._id.toString()}`,
+    },
+  });
 }

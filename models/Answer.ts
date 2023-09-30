@@ -6,6 +6,8 @@ export interface IAnswer {
   answer: string;
   voteCount: number;
   poll: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const AnswerSchema = new Schema<IAnswer>(

@@ -1,3 +1,39 @@
 body {
   font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: var(--surface-ground);
+  margin: 0;
+  padding: 0 1rem;
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.create-poll {
+  width: 50%;
+}
+
+.results,
+.vote {
+  width: 100%;
+}
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+p.card-footer {
+  font-weight: 400;
+  color: #6c757d;
 }

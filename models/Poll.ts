@@ -5,8 +5,9 @@ export interface IPoll {
   _id: Types.ObjectId;
   question: string;
   expirationDate: Date;
-  createdDate: Date;
   answers?: IAnswer[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const PollSchema = new Schema<IPoll>(

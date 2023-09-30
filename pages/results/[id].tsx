@@ -1,25 +1,81 @@
 import { IAnswer } from "@/models/Answer";
-import { IPoll } from "@/models/Poll";
+import { PollGetResponse } from "@/types";
 import axios from "axios";
+import dayjs from "dayjs";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { Button } from "primereact/button";
+import { Card } from "primereact/card";
+import { Chart } from "primereact/chart";
+import { Message } from "primereact/message";
+import { ProgressBar } from "primereact/progressbar";
 import { useEffect, useState } from "react";
 
 export default function Poll() {
-  const [data, setData] = useState<null | { poll: IPoll; answers: IAnswer[] }>(null);
+  const [data, setData] = useState<null | PollGetResponse>(null);
+  const [chartData, setChartData] = useState({});
+  const [chartOptions, setChartOptions] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isExpired, setIsExpired] = useState(false);
 
   const router = useRouter();
 
   const { id } = router.query;
 
-  useEffect(() => {
-    const fetchPoll = async () => {
+  const fetchPoll = async () => {
+    try {
       // fetch poll data
       const { data } = await axios.get(`/api/poll/${id}`);
 
-      setData(data);
-    };
+      const labels = data.answers.map((answer: IAnswer) => answer.answer);
+      const values = data.answers.map((answer: IAnswer) => answer.voteCount);
 
+      const chartData = {
+        labels,
+        datasets: [
+          {
+            label: "Votes",
+            data: values,
+
+            backgroundColor: "#6366f1",
+            borderColor: "#6366f1",
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const options = {
+        indexAxis: "y",
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      };
+
+      if (data.poll.expirationDate) {
+        const expirationDate = dayjs(data.poll.expirationDate);
+
+        if (expirationDate.isBefore(dayjs())) {
+          setIsExpired(true);
+        }
+      }
+
+      setChartData(chartData);
+      setChartOptions(options);
+      setData(data);
+    } catch (error) {
+      console.error(error);
+
+      setError("Sorry! We're unable to load this FunkyPoll");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (id) {
       // fetch poll data
       fetchPoll();
@@ -29,20 +85,63 @@ export default function Poll() {
   return (
     <>
       <Head>
-        <title>FunkyPolls</title>
+        <title>FunkyPolls | Results</title>
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>{data?.poll?.question}</h1>
-        <ul>
-          {data?.answers?.map((answer) => (
-            <li key={answer?._id.toString()}>
-              {answer.answer}: {answer.voteCount}
-            </li>
-          ))}
-        </ul>
+        <div className="results card">
+          {loading ? (
+            <ProgressBar mode="indeterminate" />
+          ) : error ? (
+            <Message severity="error" text={error} />
+          ) : (
+            <>
+              <div className="flex justify-content-between align-items-center mb-5">
+                <div>
+                  <h1 className="m-0">{data?.poll?.question}</h1>
+                  {data?.poll?.expirationDate && (
+                    <p className="card-footer m-0 mt-2">
+                      Expires: {dayjs(data.poll.expirationDate).format("MM/DD/YYYY")}
+                    </p>
+                  )}
+                </div>
+
+                {!isExpired && (
+                  <Link href={data?.links.voteUrl || "/"} target="_blank">
+                    <Button
+                      label="Vote in this FunkyPoll"
+                      icon="pi pi-external-link"
+                      iconPos="right"
+                    />
+                  </Link>
+                )}
+              </div>
+
+              <Card title="Results">
+                <Chart type="bar" data={chartData} options={chartOptions} />
+              </Card>
+
+              <div className="flex justify-content-between align-items-center mt-5">
+                <div>
+                  <p className="card-footer m-0 ">
+                    Created: {dayjs(data?.poll?.createdAt).format("MM/DD/YYYY")}
+                  </p>
+                  <p className="card-footer m-0 mt-2">
+                    Updated: {dayjs(data?.poll?.updatedAt).format("MM/DD/YYYY")}
+                  </p>
+                </div>
+                <Button
+                  label="Refresh"
+                  icon="pi pi-refresh"
+                  onClick={fetchPoll}
+                  severity="secondary"
+                />
+              </div>
+            </>
+          )}
+        </div>
       </main>
     </>
   );

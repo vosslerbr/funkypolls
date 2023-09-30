@@ -13,11 +13,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>FunkyPolls</h1>
-        <p>Welcome to FunkyPolls!</p>
-        <Link href="/create">
-          <Button label="Create a poll" />
-        </Link>
+        <div className="flex flex-column align-items-center gap-2">
+          <h1 className="m-0">FunkyPolls</h1>
+          <p className="m-0">Welcome to FunkyPolls!</p>
+
+          <Link href="/create" className="mt-4">
+            <Button label="Create a poll" />
+          </Link>
+        </div>
       </main>
     </>
   );
