@@ -7,7 +7,7 @@ interface Options {
 }
 
 const apiRequest = async ({ path, method, body }: Options) => {
-  const url = `http://localhost:3000${path}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}${path}`;
 
   const { data } = await axios[method](url, body);
 

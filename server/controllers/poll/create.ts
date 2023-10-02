@@ -17,8 +17,6 @@ export default async function createPoll(req: Request, res: Response) {
   if (!req.body.answers || !req.body.answers.length)
     return res.status(400).send("You need to provide answers");
 
-  await dbConnect();
-
   const {
     poll: { question, expirationDate },
     answers,

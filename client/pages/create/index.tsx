@@ -40,7 +40,7 @@ export default function Poll() {
   const handleSubmit = async () => {
     try {
       const data: { resultsUrl: string; voteUrl: string } = await apiRequest({
-        path: "/api/poll",
+        path: "/poll",
         method: "post",
         body: {
           poll: {

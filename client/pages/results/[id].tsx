@@ -2,6 +2,7 @@ import { IAnswer } from "@/models/Answer";
 import { PollGetResponse } from "@/types";
 import axios from "axios";
 import dayjs from "dayjs";
+import { set } from "mongoose";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,6 +12,7 @@ import { Chart } from "primereact/chart";
 import { Message } from "primereact/message";
 import { ProgressBar } from "primereact/progressbar";
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 export default function Poll() {
   const [data, setData] = useState<null | PollGetResponse>(null);
@@ -24,49 +26,52 @@ export default function Poll() {
 
   const { id } = router.query;
 
+  useEffect(() => {
+    const labels = data?.answers.map((answer: IAnswer) => answer.answer) || [];
+    const values = data?.answers.map((answer: IAnswer) => answer.voteCount) || [];
+
+    const chartData = {
+      labels,
+      datasets: [
+        {
+          label: "Votes",
+          data: values,
+
+          backgroundColor: "#6366f1",
+          borderColor: "#6366f1",
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    const options = {
+      indexAxis: "y",
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    };
+
+    if (data?.poll.expirationDate) {
+      const expirationDate = dayjs(data.poll.expirationDate);
+
+      if (expirationDate.isBefore(dayjs())) {
+        setIsExpired(true);
+      }
+    }
+
+    setChartData(chartData);
+    setChartOptions(options);
+  }, [data]);
+
   const fetchPoll = async () => {
     try {
-      const url = process.env.NEXT_PUBLIC_API_URL + `/api/poll/${id}`;
+      const url = process.env.NEXT_PUBLIC_API_URL + `/poll/${id}`;
 
       // fetch poll data
       const { data } = await axios.get(url);
 
-      const labels = data.answers.map((answer: IAnswer) => answer.answer);
-      const values = data.answers.map((answer: IAnswer) => answer.voteCount);
-
-      const chartData = {
-        labels,
-        datasets: [
-          {
-            label: "Votes",
-            data: values,
-
-            backgroundColor: "#6366f1",
-            borderColor: "#6366f1",
-            borderWidth: 1,
-          },
-        ],
-      };
-
-      const options = {
-        indexAxis: "y",
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      };
-
-      if (data.poll.expirationDate) {
-        const expirationDate = dayjs(data.poll.expirationDate);
-
-        if (expirationDate.isBefore(dayjs())) {
-          setIsExpired(true);
-        }
-      }
-
-      setChartData(chartData);
-      setChartOptions(options);
       setData(data);
     } catch (error) {
       console.error(error);
@@ -77,8 +82,21 @@ export default function Poll() {
     }
   };
 
+  const initSocket = async () => {
+    const socket = io(`http://localhost:8080?pollId=${id}`);
+
+    socket.on("newvote", (data: PollGetResponse) => {
+      console.log("new vote", data);
+
+      setData(data);
+    });
+  };
+
   useEffect(() => {
     if (id) {
+      // init socket
+      initSocket();
+
       // fetch poll data
       fetchPoll();
     }

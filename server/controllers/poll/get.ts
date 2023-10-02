@@ -5,9 +5,7 @@ import Answer, { IAnswer } from "../../models/Answer";
 import Poll, { IPoll } from "../../models/Poll";
 
 export default async function getPoll(req: Request, res: Response<PollGetResponse | string>) {
-  await dbConnect();
-
-  const { id } = req.query;
+  const { id } = req.params;
 
   const poll: IPoll | null = await Poll.findById(id);
 
