@@ -1,5 +1,6 @@
 import { IAnswer } from "@/models/Answer";
 import { PollGetResponse } from "@/types";
+import apiRequest from "@/utils/apiRequest";
 import axios from "axios";
 import dayjs from "dayjs";
 import { set } from "mongoose";
@@ -67,10 +68,10 @@ export default function Poll() {
 
   const fetchPoll = async () => {
     try {
-      const url = process.env.NEXT_PUBLIC_API_URL + `/poll/${id}`;
-
-      // fetch poll data
-      const { data } = await axios.get(url);
+      const data: PollGetResponse = await apiRequest({
+        path: `/poll/${id}`,
+        method: "get",
+      });
 
       setData(data);
     } catch (error) {
@@ -83,11 +84,9 @@ export default function Poll() {
   };
 
   const initSocket = async () => {
-    const socket = io(`http://localhost:8080?pollId=${id}`);
+    const socket = io(`${process.env.NEXT_PUBLIC_API_BASE_URL}?pollId=${id}`);
 
     socket.on("newvote", (data: PollGetResponse) => {
-      console.log("new vote", data);
-
       setData(data);
     });
   };

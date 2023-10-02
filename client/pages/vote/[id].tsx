@@ -1,6 +1,7 @@
 import { IAnswer } from "@/models/Answer";
 import { IPoll } from "@/models/Poll";
 import { PollGetResponse } from "@/types";
+import apiRequest from "@/utils/apiRequest";
 import axios from "axios";
 import dayjs from "dayjs";
 import Head from "next/head";
@@ -37,10 +38,10 @@ export default function Poll() {
   useEffect(() => {
     const fetchPoll = async () => {
       try {
-        const url = process.env.NEXT_PUBLIC_API_URL + `/poll/${id}`;
-
-        // fetch poll data
-        const { data } = await axios.get(url);
+        const data: PollGetResponse = await apiRequest({
+          path: `/poll/${id}`,
+          method: "get",
+        });
 
         if (data.poll.expirationDate) {
           const expirationDate = dayjs(data.poll.expirationDate);
@@ -69,10 +70,13 @@ export default function Poll() {
   }, [id]);
 
   const handleVote = async (answerId: string) => {
-    const url = process.env.NEXT_PUBLIC_API_URL + `/poll/vote/${id}`;
-
-    // send vote to API
-    const { data } = await axios.put(url, { answerId });
+    const data: PollGetResponse = await apiRequest({
+      path: `/poll/vote/${id}`,
+      method: "put",
+      body: {
+        answerId,
+      },
+    });
 
     localStorage.setItem(`poll-${id}`, "true");
 
