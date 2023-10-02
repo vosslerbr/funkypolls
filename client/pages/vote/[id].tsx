@@ -37,8 +37,10 @@ export default function Poll() {
   useEffect(() => {
     const fetchPoll = async () => {
       try {
+        const url = process.env.NEXT_PUBLIC_API_URL + `/api/poll/${id}`;
+
         // fetch poll data
-        const { data } = await axios.get(`/api/poll/${id}`);
+        const { data } = await axios.get(url);
 
         if (data.poll.expirationDate) {
           const expirationDate = dayjs(data.poll.expirationDate);
@@ -67,8 +69,10 @@ export default function Poll() {
   }, [id]);
 
   const handleVote = async (answerId: string) => {
+    const url = process.env.NEXT_PUBLIC_API_URL + `/api/poll/vote/${id}`;
+
     // send vote to API
-    const { data } = await axios.put(`/api/poll/vote/${id}`, { answerId });
+    const { data } = await axios.put(url, { answerId });
 
     localStorage.setItem(`poll-${id}`, "true");
 

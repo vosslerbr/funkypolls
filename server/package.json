@@ -1,16 +1,15 @@
 {
-  "name": "express-ts-boilerplate",
+  "name": "funkypolls-api",
   "version": "1.0.0",
-  "description": "A boilerplate project for building Express applications using TypeScript. Includes common middleware (CORS, Helmet, Morgan), rate limiting, and slowdown capabilities, with a development setup using ts-node-dev.",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn -- app.ts",
     "build": "tsc",
-    "start": "node ./dist/app.js",
-    "prepare": "husky install"
+    "start": "node ./dist/app.js"
   },
   "keywords": [],
-  "author": "Ksense Technology Group",
+  "author": "vosslerbr",
   "license": "UNLICENSED",
   "dependencies": {
     "cors": "^2.8.5",
@@ -20,6 +19,8 @@
     "express-slow-down": "^1.6.0",
     "helmet": "^7.0.0",
     "morgan": "^1.10.0",
+    "dayjs": "^1.11.10",
+    "mongoose": "^7.5.3",
     "socket.io": "^4.7.2"
   },
   "devDependencies": {

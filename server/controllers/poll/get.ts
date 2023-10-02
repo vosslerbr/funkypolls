@@ -1,15 +1,10 @@
-import Answer, { IAnswer } from "@/models/Answer";
-import Poll, { IPoll } from "@/models/Poll";
-import { PollGetResponse } from "@/types";
-import dbConnect from "@/utils/dbConnect";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { Request, Response } from "express";
+import { PollGetResponse } from "../../types";
+import dbConnect from "../../utils/dbConnect";
+import Answer, { IAnswer } from "../../models/Answer";
+import Poll, { IPoll } from "../../models/Poll";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<PollGetResponse | string>
-) {
-  if (req.method !== "GET") return res.status(405).send("Method Not Allowed");
-
+export default async function getPoll(req: Request, res: Response<PollGetResponse | string>) {
   await dbConnect();
 
   const { id } = req.query;

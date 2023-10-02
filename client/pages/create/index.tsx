@@ -1,4 +1,5 @@
 import NextOrPrevButton from "@/components/NextOrPrevButton";
+import apiRequest from "@/utils/apiRequest";
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
@@ -38,12 +39,16 @@ export default function Poll() {
 
   const handleSubmit = async () => {
     try {
-      const { data } = await axios.post("/api/poll", {
-        poll: {
-          question: question.trim(),
-          expiration,
+      const data: { resultsUrl: string; voteUrl: string } = await apiRequest({
+        path: "/api/poll",
+        method: "post",
+        body: {
+          poll: {
+            question: question.trim(),
+            expiration,
+          },
+          answers: answers.filter((answer) => answer).map((answer) => answer.trim()), // filter out empty answers
         },
-        answers: answers.filter((answer) => answer).map((answer) => answer.trim()), // filter out empty answers
       });
 
       setLinks(data);

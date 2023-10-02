@@ -26,8 +26,10 @@ export default function Poll() {
 
   const fetchPoll = async () => {
     try {
+      const url = process.env.NEXT_PUBLIC_API_URL + `/api/poll/${id}`;
+
       // fetch poll data
-      const { data } = await axios.get(`/api/poll/${id}`);
+      const { data } = await axios.get(url);
 
       const labels = data.answers.map((answer: IAnswer) => answer.answer);
       const values = data.answers.map((answer: IAnswer) => answer.voteCount);

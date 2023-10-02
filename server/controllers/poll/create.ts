@@ -1,8 +1,8 @@
-import Answer from "@/models/Answer";
-import Poll from "@/models/Poll";
-import dbConnect from "@/utils/dbConnect";
 import dayjs from "dayjs";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { Request, Response } from "express";
+import dbConnect from "../../utils/dbConnect";
+import Poll from "../../models/Poll";
+import Answer from "../../models/Answer";
 
 type Body = {
   poll: {
@@ -12,9 +12,7 @@ type Body = {
   answers: string[];
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
-
+export default async function createPoll(req: Request, res: Response) {
   if (!req.body.poll.question) return res.status(400).send("You need to provide a question");
   if (!req.body.answers || !req.body.answers.length)
     return res.status(400).send("You need to provide answers");
@@ -43,9 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await answer.save();
   }
 
-  // TODO update with real URL
   res.status(200).json({
-    resultsUrl: `http://localhost:3000/results/${_id.toString()}`,
-    voteUrl: `http://localhost:3000/vote/${_id.toString()}`,
+    resultsUrl: `${process.env.BASE_URL}/results/${_id.toString()}`,
+    voteUrl: `${process.env.BASE_URL}/vote/${_id.toString()}`,
   });
 }

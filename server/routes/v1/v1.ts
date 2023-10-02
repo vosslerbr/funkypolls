@@ -1,13 +1,12 @@
-/**
- * Module for creating and exporting the router instance.
- *
- * @module router
- */
-
 import express from "express";
-import exampleRoute from "./exampleRoute";
+import createPoll from "../../controllers/poll/create";
+import getPoll from "../../controllers/poll/get";
+import submitVote from "../../controllers/poll/submitVote";
+
 const router = express.Router();
 
-router.get("/example", exampleRoute);
+router.post("/poll", createPoll);
+router.get("/poll/:id", getPoll);
+router.put("/poll/vote/:id", submitVote);
 
 export default router;
