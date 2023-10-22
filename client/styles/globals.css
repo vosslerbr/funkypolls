@@ -3,7 +3,6 @@ body {
   color: var(--text-color);
   background-color: var(--surface-ground);
   margin: 0;
-  padding: 0 1rem;
 }
 
 main {
@@ -18,7 +17,8 @@ main {
 }
 
 .create-poll {
-  width: 50%;
+  width: 100%;
+  max-width: 720px;
 }
 
 .results,
@@ -30,10 +30,19 @@ main {
   background: var(--surface-card);
   padding: 2rem;
   border-radius: 10px;
-  margin-bottom: 1rem;
 }
 
 p.card-footer {
   font-weight: 400;
   color: #6c757d;
+}
+
+@media screen and (max-width: 560px) {
+  main {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
 }

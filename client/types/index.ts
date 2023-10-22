@@ -1,5 +1,22 @@
-import { IAnswer } from "@/models/Answer";
-import { IPoll } from "@/models/Poll";
+import { Types } from "mongoose";
+
+export interface IAnswer {
+  _id: Types.ObjectId;
+  answer: string;
+  voteCount: number;
+  poll: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IPoll {
+  _id: Types.ObjectId;
+  question: string;
+  expirationDate: Date;
+  answers?: IAnswer[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export interface PollGetResponse {
   poll: IPoll;

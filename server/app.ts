@@ -35,7 +35,7 @@ io.on("connection", (socket) => {
   console.log("Socket connected");
 
   // get the Poll ID from the client
-  const pollId = socket.handshake.query.pollId;
+  const pollId = socket.handshake.query.pollId as string;
 
   // join the poll room
   socket.join(pollId);

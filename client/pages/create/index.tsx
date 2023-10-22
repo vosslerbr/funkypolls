@@ -1,6 +1,6 @@
 import NextOrPrevButton from "@/components/NextOrPrevButton";
+import { PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
-import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,9 +11,11 @@ import { InputText } from "primereact/inputtext";
 import { MenuItem } from "primereact/menuitem";
 import { Steps } from "primereact/steps";
 import { Nullable } from "primereact/ts-helpers";
-import { useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
+import { NextPageWithLayout } from "../_app";
+import Layout from "@/components/Layout";
 
-export default function Poll() {
+const CreatePoll: NextPageWithLayout = () => {
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState<string[]>([]);
   const [expiration, setExpiration] = useState<Nullable<Date>>(null);
@@ -39,7 +41,7 @@ export default function Poll() {
 
   const handleSubmit = async () => {
     try {
-      const data: { resultsUrl: string; voteUrl: string } = await apiRequest({
+      const data: PollGetResponse = await apiRequest({
         path: "/poll",
         method: "post",
         body: {
@@ -51,7 +53,7 @@ export default function Poll() {
         },
       });
 
-      setLinks(data);
+      setLinks(data.links);
     } catch (error) {
       console.error(error);
     }
@@ -84,19 +86,42 @@ export default function Poll() {
       <main>
         {links ? (
           <Dialog
-            header="Your FunkyPoll links"
+            header="FunkyPoll Created!"
             visible={links ? true : false}
             onHide={() => {
               router.push(links.resultsUrl);
             }}>
-            <Link href={links.resultsUrl} target="_blank">
-              <Button label="Results" />
-            </Link>
-            <p>{links.resultsUrl}</p>
-            <Link href={links.voteUrl} target="_blank">
-              <Button label="Vote" />
-            </Link>
-            <p>{links.voteUrl}</p>
+            <h3>Results</h3>
+            <div className="flex gap-4">
+              <Link href={links.resultsUrl} target="_blank">
+                <Button label="Go" icon="pi pi-external-link" iconPos="right" />
+              </Link>
+              <Button
+                label="Copy Link"
+                icon="pi pi-copy"
+                iconPos="right"
+                severity="secondary"
+                onClick={() => {
+                  navigator.clipboard.writeText(links.resultsUrl);
+                }}
+              />
+            </div>
+
+            <h3>Vote</h3>
+            <div className="flex gap-4">
+              <Link href={links.voteUrl} target="_blank">
+                <Button label="Go" icon="pi pi-external-link" iconPos="right" />
+              </Link>
+              <Button
+                label="Copy Link"
+                icon="pi pi-copy"
+                iconPos="right"
+                severity="secondary"
+                onClick={() => {
+                  navigator.clipboard.writeText(links.voteUrl);
+                }}
+              />
+            </div>
           </Dialog>
         ) : (
           <div className="flex flex-column gap-4 create-poll card">
@@ -194,8 +219,9 @@ export default function Poll() {
                 />
                 <label htmlFor="expiration-date">
                   <small>
-                    Choose a date you&apos;d like this FunkyPoll to expire and automatically be
-                    deleted. If left blank, your FunkyPoll will automatically expire after 30 days.
+                    Choose a date you&apos;d like this FunkyPoll to expire. If left blank, your
+                    FunkyPoll will automatically expire after 30 days. Expired polls can be viewed
+                    but not voted on.
                   </small>
                 </label>
                 <div className="flex justify-content-between">
@@ -236,4 +262,10 @@ export default function Poll() {
       </main>
     </>
   );
-}
+};
+
+CreatePoll.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default CreatePoll;

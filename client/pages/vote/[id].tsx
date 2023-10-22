@@ -1,14 +1,10 @@
-import { IAnswer } from "@/models/Answer";
-import { IPoll } from "@/models/Poll";
-import { PollGetResponse } from "@/types";
+import { IAnswer, PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
-import axios from "axios";
 import dayjs from "dayjs";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "primereact/button";
-import { Card } from "primereact/card";
 import { Message } from "primereact/message";
 import { ProgressBar } from "primereact/progressbar";
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
@@ -115,7 +111,7 @@ export default function Poll() {
                 </p>
               ) : voted ? (
                 <p>
-                  You&apos;ve already voted in this FunkyPoll. See the results{" "}
+                  You voted in this FunkyPoll. See the results{" "}
                   <Link href={data?.links.resultsUrl || "/"}>here</Link>.
                 </p>
               ) : (

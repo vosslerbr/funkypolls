@@ -1,9 +1,6 @@
-import { IAnswer } from "@/models/Answer";
-import { PollGetResponse } from "@/types";
+import { IAnswer, PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
-import axios from "axios";
 import dayjs from "dayjs";
-import { set } from "mongoose";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,10 +9,12 @@ import { Card } from "primereact/card";
 import { Chart } from "primereact/chart";
 import { Message } from "primereact/message";
 import { ProgressBar } from "primereact/progressbar";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { NextPageWithLayout } from "../_app";
+import Layout from "@/components/Layout";
 
-export default function Poll() {
+const PollResults: NextPageWithLayout = () => {
   const [data, setData] = useState<null | PollGetResponse>(null);
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
@@ -99,6 +98,7 @@ export default function Poll() {
       // fetch poll data
       fetchPoll();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
@@ -164,4 +164,10 @@ export default function Poll() {
       </main>
     </>
   );
-}
+};
+
+PollResults.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default PollResults;

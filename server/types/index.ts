@@ -1,5 +1,5 @@
-import { IAnswer } from "@/models/Answer";
-import { IPoll } from "@/models/Poll";
+import { IAnswer } from "../models/Answer";
+import { IPoll } from "../models/Poll";
 
 export interface PollGetResponse {
   poll: IPoll;

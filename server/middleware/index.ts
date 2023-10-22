@@ -8,13 +8,13 @@ import helmet from "helmet";
 import corsMiddleware from "./corsMiddleware";
 import { rateLimiter, speedLimiter } from "./limiterMiddleware";
 import morgan from "morgan";
-import express from "express";
+import express, { Express } from "express";
 
-const applyMiddleware = (app) => {
-  app.use(express.json())
+const applyMiddleware = (app: Express) => {
+  app.use(express.json());
   app.use(corsMiddleware);
   app.use(helmet());
-  app.set('trust proxy', 1)
+  app.set("trust proxy", 1);
   app.use(speedLimiter);
   app.use(rateLimiter);
   app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
