@@ -1,9 +1,9 @@
-import { IAnswer } from "../models/Answer";
-import { IPoll } from "../models/Poll";
+import { Answer } from "../models/Answer";
+import { Poll } from "../models/Poll";
 
 export interface PollGetResponse {
-  poll: IPoll;
-  answers: IAnswer[];
+  poll: Poll;
+  answers: Answer[];
   links: {
     resultsUrl: string;
     voteUrl: string;

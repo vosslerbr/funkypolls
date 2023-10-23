@@ -1,4 +1,4 @@
-import { IAnswer, PollGetResponse } from "@/types";
+import { Answer, PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
 import dayjs from "dayjs";
 import Head from "next/head";
@@ -16,7 +16,7 @@ export default function Poll() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isExpired, setIsExpired] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<IAnswer>({} as IAnswer);
+  const [selectedAnswer, setSelectedAnswer] = useState<Answer>({} as Answer);
 
   const router = useRouter();
 

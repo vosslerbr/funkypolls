@@ -1,16 +1,16 @@
 import { Schema, Types, model, models } from "mongoose";
-import { IAnswer } from "./Answer";
+import { Answer } from "./Answer";
 
-export interface IPoll {
+export interface Poll {
   _id: Types.ObjectId;
   question: string;
   expirationDate: Date;
-  answers?: IAnswer[];
+  answers?: Answer[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-const PollSchema = new Schema<IPoll>(
+const PollSchema = new Schema<Poll>(
   {
     question: String,
     expirationDate: Date,
@@ -20,4 +20,4 @@ const PollSchema = new Schema<IPoll>(
   }
 );
 
-export default models.Poll || model<IPoll>("Poll", PollSchema);
+export default models.Poll || model<Poll>("Poll", PollSchema);

@@ -1,7 +1,7 @@
 import { Schema, Types, model, models } from "mongoose";
 import Poll from "./Poll";
 
-export interface IAnswer {
+export interface Answer {
   _id: Types.ObjectId;
   answer: string;
   voteCount: number;
@@ -10,7 +10,7 @@ export interface IAnswer {
   updatedAt: Date;
 }
 
-const AnswerSchema = new Schema<IAnswer>(
+const AnswerSchema = new Schema<Answer>(
   {
     answer: String,
     voteCount: Number,
@@ -24,4 +24,4 @@ const AnswerSchema = new Schema<IAnswer>(
   }
 );
 
-export default models.Answer || model<IAnswer>("Answer", AnswerSchema);
+export default models.Answer || model<Answer>("Answer", AnswerSchema);

@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { Request, Response } from "express";
-import Poll from "../../models/Poll";
-import Answer from "../../models/Answer";
+import prisma from "../../utils/prismaConnect";
 import getPollAndAnswers from "../../helpers/getPollAndAnswers";
 
 type Body = {
@@ -9,39 +8,45 @@ type Body = {
     question: string;
     expirationDate?: Date;
   };
-  answers: string[];
+  options: string[];
 };
 
 export default async function createPoll(req: Request, res: Response) {
   try {
     if (!req.body.poll.question) return res.status(400).send("You need to provide a question");
 
-    if (!req.body.answers || !req.body.answers.length)
-      return res.status(400).send("You need to provide answers");
+    if (!req.body.options || !req.body.options.length)
+      return res.status(400).send("You need to provide options");
 
     const {
       poll: { question, expirationDate },
-      answers,
+      options,
     } = req.body as Body;
 
-    const poll = new Poll({
-      question,
-      expirationDate: expirationDate ? new Date(expirationDate) : dayjs().add(1, "month").toDate(),
+    const poll = await prisma.poll.create({
+      data: {
+        question,
+        expirationDate: expirationDate
+          ? dayjs(expirationDate).toISOString()
+          : dayjs().add(30, "day").toISOString(),
+      },
     });
 
-    const { _id } = await poll.save();
-
-    for (const answerString of answers) {
-      const answer = new Answer({
-        answer: answerString,
-        voteCount: 0,
-        poll: _id,
+    for (const option of options) {
+      await prisma.option.create({
+        data: {
+          text: option,
+          votes: 0,
+          poll: {
+            connect: {
+              id: poll.id,
+            },
+          },
+        },
       });
-
-      await answer.save();
     }
 
-    const pollData = await getPollAndAnswers(_id.toString());
+    const pollData = await getPollAndAnswers(poll.id);
 
     res.status(200).json(pollData);
   } catch (error) {

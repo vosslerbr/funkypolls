@@ -49,7 +49,7 @@ const CreatePoll: NextPageWithLayout = () => {
             question: question.trim(),
             expiration,
           },
-          answers: answers.filter((answer) => answer).map((answer) => answer.trim()), // filter out empty answers
+          options: answers.filter((answer) => answer).map((answer) => answer.trim()), // filter out empty answers
         },
       });
 

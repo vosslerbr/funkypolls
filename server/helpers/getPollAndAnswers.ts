@@ -1,21 +1,24 @@
-import Answer, { IAnswer } from "../models/Answer";
-import Poll, { IPoll } from "../models/Poll";
 import { PollGetResponse } from "../types";
+import prisma from "../utils/prismaConnect";
 
-export default async (pollId: string): Promise<PollGetResponse> => {
-  const poll: IPoll | null = await Poll.findById(pollId);
+export default async (pollId: string): Promise<any> => {
+  const poll = await prisma.poll.findUnique({
+    where: {
+      id: pollId,
+    },
+    include: {
+      options: true,
+    },
+  });
 
   if (!poll) throw new Error("Poll not found");
 
-  // Find the answers that match the poll's ID and populate them
-  const answers: IAnswer[] = await Answer.find({ poll: poll._id });
-
   return {
     poll,
-    answers,
+    // answers,
     links: {
-      resultsUrl: `${process.env.BASE_URL}/results/${poll._id.toString()}`,
-      voteUrl: `${process.env.BASE_URL}/vote/${poll._id.toString()}`,
+      resultsUrl: `${process.env.BASE_URL}/results/${poll.id.toString()}`,
+      voteUrl: `${process.env.BASE_URL}/vote/${poll.id.toString()}`,
     },
   };
 };

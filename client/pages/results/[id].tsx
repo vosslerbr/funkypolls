@@ -1,4 +1,4 @@
-import { IAnswer, PollGetResponse } from "@/types";
+import { Answer, PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
 import dayjs from "dayjs";
 import Head from "next/head";
@@ -27,8 +27,8 @@ const PollResults: NextPageWithLayout = () => {
   const { id } = router.query;
 
   useEffect(() => {
-    const labels = data?.answers.map((answer: IAnswer) => answer.answer) || [];
-    const values = data?.answers.map((answer: IAnswer) => answer.voteCount) || [];
+    const labels = data?.answers.map((answer: Answer) => answer.answer) || [];
+    const values = data?.answers.map((answer: Answer) => answer.voteCount) || [];
 
     const chartData = {
       labels,
