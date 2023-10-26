@@ -12,7 +12,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <section className="card mb-4 flex flex-column align-items-center gap-4">
+        <section className="card mb-4 flex flex-column align-items-center gap-4" id="index-main">
           <h1 className="m-0">Welcome to FunkyPolls!</h1>
           <Link href="/create">
             <Button label="Create a FunkyPoll" />

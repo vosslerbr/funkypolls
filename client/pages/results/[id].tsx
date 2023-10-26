@@ -1,4 +1,3 @@
-import { Answer, PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
 import dayjs from "dayjs";
 import Head from "next/head";

@@ -16,6 +16,13 @@ main {
   min-height: 100vh;
 }
 
+#index-main {
+  height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 main h1 {
   font-size: 2rem;
 }
