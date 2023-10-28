@@ -4,7 +4,6 @@ import errorHandler from "./middleware/globalErrorsMiddleware";
 import v1Routes from "./routes/v1/v1";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import dbConnect from "./utils/dbConnect";
 
 require("dotenv").config();
 
@@ -46,8 +45,6 @@ io.on("connection", (socket) => {
     console.log("Socket disconnected");
   });
 });
-
-dbConnect();
 
 httpServer.listen(port, () => {
   console.log(`Express app listening on port ${port}`);

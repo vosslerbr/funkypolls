@@ -1,8 +1,6 @@
-export interface PollGetResponse {
-  poll: Poll;
-  answers: Answer[];
-  links: {
-    resultsUrl: string;
-    voteUrl: string;
-  };
-}
+import { Option, Poll } from "@prisma/client";
+
+export type PollGetResponse = {
+  poll: Poll & { options: Option[] };
+  links: { resultsUrl: string; voteUrl: string };
+};

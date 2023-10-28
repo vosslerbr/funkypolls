@@ -1,5 +1,6 @@
-import { Answer, PollGetResponse } from "@/types";
+import { PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
+import { Option } from "@prisma/client";
 import dayjs from "dayjs";
 import Head from "next/head";
 import Link from "next/link";
@@ -8,15 +9,17 @@ import { Button } from "primereact/button";
 import { Message } from "primereact/message";
 import { ProgressBar } from "primereact/progressbar";
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import { NextPageWithLayout } from "../_app";
+import Layout from "@/components/Layout";
 
-export default function Poll() {
+const PollVote: NextPageWithLayout = () => {
   const [data, setData] = useState<null | PollGetResponse>(null);
   const [voted, setVoted] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isExpired, setIsExpired] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<Answer>({} as Answer);
+  const [selectedOption, setSelectedOption] = useState<Option>({} as Option);
 
   const router = useRouter();
 
@@ -47,7 +50,7 @@ export default function Poll() {
           }
         }
 
-        setSelectedAnswer(data.answers[0]);
+        setSelectedOption(data.poll.options[0]);
 
         setData(data);
       } catch (error) {
@@ -65,12 +68,12 @@ export default function Poll() {
     }
   }, [id]);
 
-  const handleVote = async (answerId: string) => {
+  const handleVote = async (optionId: string) => {
     const data: PollGetResponse = await apiRequest({
       path: `/poll/vote/${id}`,
       method: "put",
       body: {
-        answerId,
+        optionId,
       },
     });
 
@@ -117,25 +120,25 @@ export default function Poll() {
               ) : (
                 <>
                   <div className="flex flex-column gap-3">
-                    {data?.answers?.map((answer) => (
-                      <div key={answer._id.toString()}>
+                    {data?.poll.options?.map((option) => (
+                      <div key={option.id}>
                         <RadioButton
-                          inputId={answer?._id.toString()}
+                          inputId={option.id}
                           name="answer"
-                          value={answer}
+                          value={option}
                           // @ts-ignore this works, idk why TS is complaining
-                          onChange={(e: RadioButtonChangeEvent) => setSelectedAnswer(e.value)}
-                          checked={selectedAnswer?._id?.toString() === answer?._id?.toString()}
+                          onChange={(e: RadioButtonChangeEvent) => setSelectedOption(e.value)}
+                          checked={selectedOption.id === option.id}
                         />
-                        <label htmlFor={answer?._id.toString()} className="ml-2">
-                          {answer.answer}
+                        <label htmlFor={option.id} className="ml-2">
+                          {option.text}
                         </label>
                       </div>
                     ))}
                     <Button
                       label="Submit Vote"
                       className="mt-3 m-auto"
-                      onClick={() => handleVote(selectedAnswer?._id?.toString() || "")}
+                      onClick={() => handleVote(selectedOption.id || "")}
                     />
                   </div>
                 </>
@@ -146,4 +149,10 @@ export default function Poll() {
       </main>
     </>
   );
-}
+};
+
+PollVote.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default PollVote;
