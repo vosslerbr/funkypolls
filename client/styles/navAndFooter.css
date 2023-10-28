@@ -1,6 +1,8 @@
 nav {
   background-color: var(--primary-color);
   padding: 1rem;
+  position: sticky;
+  top: 0;
 }
 
 #nav-inner {

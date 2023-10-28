@@ -17,7 +17,7 @@ import Layout from "@/components/Layout";
 
 const CreatePoll: NextPageWithLayout = () => {
   const [question, setQuestion] = useState("");
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [options, setOptions] = useState<string[]>([]);
   const [expiration, setExpiration] = useState<Nullable<Date>>(null);
   const [links, setLinks] = useState<null | { resultsUrl: string; voteUrl: string }>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -29,7 +29,7 @@ const CreatePoll: NextPageWithLayout = () => {
       label: "Question",
     },
     {
-      label: "Answers",
+      label: "Options",
     },
     {
       label: "Expiration Date",
@@ -49,7 +49,7 @@ const CreatePoll: NextPageWithLayout = () => {
             question: question.trim(),
             expiration,
           },
-          answers: answers.filter((answer) => answer).map((answer) => answer.trim()), // filter out empty answers
+          options: options.filter((option) => option).map((option) => option.trim()), // filter out empty
         },
       });
 
@@ -60,7 +60,7 @@ const CreatePoll: NextPageWithLayout = () => {
   };
 
   const handleAddAnswer = () => {
-    setAnswers([...answers, ""]);
+    setOptions([...options, ""]);
   };
 
   // useEffect(() => {
@@ -158,18 +158,18 @@ const CreatePoll: NextPageWithLayout = () => {
             {activeIndex === 1 && (
               <>
                 {/* TODO */}
-                {answers.map((answer, index) => {
+                {options.map((option, index) => {
                   return (
                     <InputText
                       key={index}
-                      placeholder="Answer"
-                      value={answer}
+                      placeholder="Option"
+                      value={option}
                       onChange={(e) => {
-                        const newAnswers = [...answers];
+                        const newAnswers = [...options];
                         newAnswers[index] = e.target.value;
-                        setAnswers(newAnswers);
+                        setOptions(newAnswers);
                       }}
-                      className="answer"
+                      className="option"
                       onKeyUp={(e) => {
                         if (e.key === "Enter" && e.shiftKey) {
                           handleAddAnswer();
@@ -182,10 +182,10 @@ const CreatePoll: NextPageWithLayout = () => {
                 })}
 
                 <label>
-                  <small>These are the answers you want to provide to your FunkyPoll voters.</small>
+                  <small>These are the options you want to provide to your FunkyPoll voters.</small>
                 </label>
                 <Button
-                  label="Add an answer"
+                  label="Add an option"
                   onClick={handleAddAnswer}
                   className="m-auto"
                   icon="pi pi-plus"
@@ -201,7 +201,7 @@ const CreatePoll: NextPageWithLayout = () => {
                     type="next"
                     activeIndex={activeIndex}
                     setActiveIndex={setActiveIndex}
-                    disabled={!answers.length || answers.filter((answer) => !answer).length > 0}
+                    disabled={!options.length || options.filter((option) => !option).length > 0}
                   />
                 </div>
               </>

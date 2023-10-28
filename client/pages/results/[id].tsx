@@ -1,4 +1,3 @@
-import { IAnswer, PollGetResponse } from "@/types";
 import apiRequest from "@/utils/apiRequest";
 import dayjs from "dayjs";
 import Head from "next/head";
@@ -13,6 +12,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { NextPageWithLayout } from "../_app";
 import Layout from "@/components/Layout";
+import { PollGetResponse } from "@/types";
 
 const PollResults: NextPageWithLayout = () => {
   const [data, setData] = useState<null | PollGetResponse>(null);
@@ -27,8 +27,8 @@ const PollResults: NextPageWithLayout = () => {
   const { id } = router.query;
 
   useEffect(() => {
-    const labels = data?.answers.map((answer: IAnswer) => answer.answer) || [];
-    const values = data?.answers.map((answer: IAnswer) => answer.voteCount) || [];
+    const labels = data?.poll.options.map((option) => option.text) || [];
+    const values = data?.poll.options.map((option) => option.votes) || [];
 
     const chartData = {
       labels,
@@ -36,7 +36,6 @@ const PollResults: NextPageWithLayout = () => {
         {
           label: "Votes",
           data: values,
-
           backgroundColor: "#6366f1",
           borderColor: "#6366f1",
           borderWidth: 1,
@@ -83,10 +82,11 @@ const PollResults: NextPageWithLayout = () => {
   };
 
   const initSocket = async () => {
-    const socket = io(`${process.env.NEXT_PUBLIC_API_BASE_URL}?pollId=${id}`);
+    const socket = io(`http://localhost:8080/?pollId=${id}`);
 
-    socket.on("newvote", (data: PollGetResponse) => {
-      setData(data);
+    // TODO add debounce to only refresh after a small delay
+    socket.on("newvote", () => {
+      fetchPoll();
     });
   };
 

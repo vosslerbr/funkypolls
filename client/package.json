@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.4.2",
     "axios": "^1.5.1",
     "chart.js": "^4.4.0",
     "dayjs": "^1.11.10",
@@ -19,7 +20,8 @@
     "primereact": "^10.0.1",
     "react": "latest",
     "react-dom": "latest",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "prisma": "^5.4.2"
   },
   "devDependencies": {
     "@types/node": "latest",

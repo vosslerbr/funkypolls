@@ -1,12 +1,18 @@
-import express from "express";
-import createPoll from "../../controllers/poll/create";
-import getPoll from "../../controllers/poll/get";
-import submitVote from "../../controllers/poll/submitVote";
+import express, { Request, Response } from "express";
+import { io } from "../../app";
 
 const router = express.Router();
 
-router.post("/poll", createPoll);
-router.get("/poll/:id", getPoll);
-router.put("/poll/vote/:id", submitVote);
+router.post("/newvote/:id", (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    io.to(id).emit("newvote");
+
+    res.status(200).send("OK");
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 export default router;
