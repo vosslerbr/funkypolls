@@ -16,22 +16,34 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 
-const currentDate = new Date();
+const currentDate = dayjs().toDate();
+const thirtyDaysFromNow = dayjs().add(30, "day").toDate();
 
 const formSchema = z.object({
-  question: z.string().min(1, {
-    message: "A question is required",
-  }),
+  question: z
+    .string()
+    .min(1, {
+      message: "A question is required",
+    })
+    .max(120, {
+      message: "Question cannot be longer than 120 characters",
+    }),
   options: z
     .array(
       z.object({
-        value: z.string().min(1, {
-          message: "Option cannot be blank",
-        }),
+        value: z
+          .string()
+          .min(1, {
+            message: "Option cannot be blank",
+          })
+          .max(120, {
+            message: "Option cannot be longer than 120 characters",
+          }),
       })
     )
     .min(2, {
@@ -41,7 +53,12 @@ const formSchema = z.object({
       message: "You cannot have more than five options",
     }),
   expiration: z.date().min(currentDate),
-  password: z.string().nullable(),
+  password: z
+    .string()
+    .min(4, {
+      message: "Password must be at least 4 characters",
+    })
+    .optional(),
 });
 
 export default function CreatePoll() {
@@ -49,9 +66,9 @@ export default function CreatePoll() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       question: "",
-      options: [],
-      expiration: currentDate,
-      password: null,
+      options: [{ value: "" }, { value: "" }],
+      expiration: thirtyDaysFromNow,
+      password: undefined,
     },
   });
 
@@ -64,21 +81,28 @@ export default function CreatePoll() {
     },
   });
 
+  // TODO
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("hello");
-    console.log(values);
+    // filter out empty options
+
+    const sanitizedValues = {
+      ...values,
+      options: values.options.filter((option) => option.value),
+    };
+
+    console.log(sanitizedValues);
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <p>CREATE PAGE</p>
+      <h2 className="text-2xl mb-8 font-bold">Create</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="question"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mb-8">
                 <FormLabel>Question</FormLabel>
                 <FormControl>
                   <Input placeholder="Question" {...field} />
@@ -90,7 +114,7 @@ export default function CreatePoll() {
               </FormItem>
             )}
           />
-          <div>
+          <div className="mb-8">
             {fields.map((field, index) => (
               // TODO idk how to limit this to 5 options max
               <FormField
@@ -99,12 +123,14 @@ export default function CreatePoll() {
                 name={`options.${index}.value`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={cn(index !== 0 && "sr-only")}>
-                      Option {index + 1}
-                    </FormLabel>
+                    <FormLabel className={cn(index !== 0 && "sr-only")}>Options</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
+                    <FormDescription className={cn(index !== fields.length - 1 && "sr-only")}>
+                      These are the options that you want people to choose from. You can provide 2
+                      to 5 options.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -115,6 +141,7 @@ export default function CreatePoll() {
               variant="outline"
               size="sm"
               className="mt-2"
+              disabled={fields.length >= 5}
               onClick={() => append({ value: "" })}>
               Add Option
             </Button>
@@ -124,7 +151,7 @@ export default function CreatePoll() {
             control={form.control}
             name="expiration"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mb-8">
                 <FormLabel>Expiration</FormLabel>
                 <FormControl>
                   <Popover>
@@ -150,6 +177,24 @@ export default function CreatePoll() {
                   </Popover>
                 </FormControl>
 
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="mb-8">
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="Password" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is optional. If given a password, voters will have to enter it before they
+                  can vote. Leave blank if you want your poll to be public.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
