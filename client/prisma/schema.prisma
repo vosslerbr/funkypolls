@@ -17,6 +17,7 @@ model Poll {
   // default to 30 days from now
   expirationDate DateTime @default(now())
   options   Option[]
+  password  String? // optional password to protect poll
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
