@@ -22,7 +22,7 @@ export default function Nav() {
   if (!isLoaded) return null;
 
   return (
-    <nav className="flex flex-row justify-between px-24 py-8">
+    <nav className="flex flex-row justify-between px-24 py-4 sticky top-0 bg-inherit shadow">
       <Link href="/">
         <h1 className="text-2xl font-bold">FunkyPolls</h1>
       </Link>
