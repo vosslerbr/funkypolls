@@ -1,5 +1,7 @@
 "use client";
 
+import PageTitle from "@/components/PageTitle";
+import LinksDialog from "@/components/alerts/LinksDialog";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -13,63 +15,30 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useToast } from "@/components/ui/use-toast";
+import { Links } from "@/lib/helpers.ts/getPollAndAnswers";
 import { cn } from "@/lib/utils";
+import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
-
-const currentDate = dayjs().toDate();
-const thirtyDaysFromNow = dayjs().add(30, "day").toDate();
-
-const formSchema = z.object({
-  question: z
-    .string()
-    .min(1, {
-      message: "A question is required",
-    })
-    .max(120, {
-      message: "Question cannot be longer than 120 characters",
-    }),
-  options: z
-    .array(
-      z.object({
-        value: z
-          .string()
-          .min(1, {
-            message: "Option cannot be blank",
-          })
-          .max(120, {
-            message: "Option cannot be longer than 120 characters",
-          }),
-      })
-    )
-    .min(2, {
-      message: "You must have at least two options",
-    })
-    .max(5, {
-      message: "You cannot have more than five options",
-    }),
-  expiration: z.date().min(currentDate),
-  password: z
-    .string()
-    .min(4, {
-      message: "Password must be at least 4 characters",
-    })
-    .optional(),
-});
+import { createFunkyPoll } from "../../lib/actions";
+import { CreatePollFormValues, currentDate, defaultValues, formSchema } from "./formSetup";
 
 export default function CreatePoll() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [showLinksDialog, setShowLinksDialog] = useState(false);
+  const [links, setLinks] = useState<Links | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const { toast } = useToast();
+  const { user } = useUser();
+
+  // TODO we want expiration to be based on a selected lifetime (1min, 5min, 1hr, 1day, 1week, 1month, 1year...) instead of a date
+  const form = useForm<CreatePollFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      question: "",
-      options: [{ value: "" }, { value: "" }],
-      expiration: thirtyDaysFromNow,
-      password: undefined,
-    },
+    defaultValues,
   });
 
   const { fields, append } = useFieldArray({
@@ -81,21 +50,44 @@ export default function CreatePoll() {
     },
   });
 
-  // TODO
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // filter out empty options
+  async function onSubmit(values: CreatePollFormValues) {
+    try {
+      setSubmitting(true);
 
-    const sanitizedValues = {
-      ...values,
-      options: values.options.filter((option) => option.value),
-    };
+      if (!user) throw new Error("User is not logged in");
 
-    console.log(sanitizedValues);
+      // filter out empty options
+      const sanitizedValues = {
+        ...values,
+        options: values.options.filter((option) => option.value),
+        userId: user.id,
+      };
+
+      const links = await createFunkyPoll(sanitizedValues);
+
+      form.reset();
+
+      // show modal
+      setLinks(links);
+      setShowLinksDialog(true);
+    } catch (error) {
+      console.error(error);
+
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "There was an error creating your FunkyPoll. Please try again.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h2 className="text-2xl mb-8 font-bold">Create</h2>
+    <main className="flex min-h-screen flex-col   p-24">
+      <LinksDialog links={links} open={showLinksDialog} setShowLinksDialog={setShowLinksDialog} />
+
+      <PageTitle title="Create a FunkyPoll" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -105,7 +97,7 @@ export default function CreatePoll() {
               <FormItem className="mb-8">
                 <FormLabel>Question</FormLabel>
                 <FormControl>
-                  <Input placeholder="Question" {...field} />
+                  <Input placeholder="Question" {...field} disabled={submitting} />
                 </FormControl>
                 <FormDescription>
                   This is the question that you want to ask. It should be short and to the point.
@@ -125,7 +117,7 @@ export default function CreatePoll() {
                   <FormItem>
                     <FormLabel className={cn(index !== 0 && "sr-only")}>Options</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={submitting} />
                     </FormControl>
                     <FormDescription className={cn(index !== fields.length - 1 && "sr-only")}>
                       These are the options that you want people to choose from. You can provide 2
@@ -141,7 +133,7 @@ export default function CreatePoll() {
               variant="outline"
               size="sm"
               className="mt-2"
-              disabled={fields.length >= 5}
+              disabled={fields.length >= 5 || submitting}
               onClick={() => append({ value: "" })}>
               Add Option
             </Button>
@@ -157,6 +149,7 @@ export default function CreatePoll() {
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
+                        disabled={submitting}
                         variant={"outline"}
                         className={cn(
                           "w-[280px] justify-start text-left font-normal",
@@ -189,7 +182,7 @@ export default function CreatePoll() {
               <FormItem className="mb-8">
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Password" {...field} />
+                  <Input type="password" placeholder="Password" {...field} disabled={submitting} />
                 </FormControl>
                 <FormDescription>
                   This is optional. If given a password, voters will have to enter it before they
@@ -200,7 +193,9 @@ export default function CreatePoll() {
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={submitting}>
+            Submit
+          </Button>
         </form>
       </Form>
     </main>

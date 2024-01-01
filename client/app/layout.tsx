@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
+import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Nav />
           {children}
           <Footer />
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

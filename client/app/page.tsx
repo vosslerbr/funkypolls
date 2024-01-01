@@ -21,7 +21,7 @@ export default function Home() {
           <CardContent>
             <p>
               FunkyPolls can be used for creating polls for use in the classroom, workplace, or
-              anywhere else you need. Each poll can be created with up to 10 answers and can be set
+              anywhere else you need. Each poll can be created with up to 5 answers and can be set
               to expire whenever you&apos;d like. Results update in real time, so you can see what
               your voters are deciding as they vote.
             </p>
