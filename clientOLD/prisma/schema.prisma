@@ -14,10 +14,10 @@ generator client {
 model Poll {
   id        String      @id @default(cuid())
   question     String
+  // default to 30 days from now
   expirationDate DateTime @default(now())
   options   Option[]
   password  String? // optional password to protect poll
-  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -25,7 +25,7 @@ model Poll {
 model Option {
   id        String      @id @default(cuid())
   text      String
-  votes     Int        @default(0)
+  votes     Int
   poll      Poll     @relation(fields: [pollId], references: [id])
   pollId    String
   createdAt DateTime @default(now())
