@@ -35,6 +35,8 @@ export default function Vote({ params }: { params: { id: string } }) {
       try {
         const requiresPassword = await checkForPollPassword(id);
 
+        console.log("requiresPassword", requiresPassword);
+
         if (requiresPassword) return;
 
         const data = await getPollById(id);
@@ -83,7 +85,7 @@ export default function Vote({ params }: { params: { id: string } }) {
 
   if (!validated) {
     return (
-      <main className="flex min-h-screen flex-col p-24">
+      <>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -107,12 +109,12 @@ export default function Vote({ params }: { params: { id: string } }) {
             <Button type="submit">Submit</Button>
           </form>
         </Form>
-      </main>
+      </>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col p-24">
+    <>
       <PageTitle title="Vote" />
       <h2>{poll?.question}</h2>
 
@@ -121,6 +123,6 @@ export default function Vote({ params }: { params: { id: string } }) {
           <li key={option.id}>{option.text}</li>
         ))}
       </ul>
-    </main>
+    </>
   );
 }

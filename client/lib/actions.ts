@@ -51,9 +51,25 @@ export const getUserPolls = async (userId: string) => {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      options: true,
+    },
   });
 
-  return polls;
+  const pollsWithLinks = polls.map((poll) => {
+    return {
+      poll: {
+        ...poll,
+        password: null,
+      },
+      links: {
+        resultsUrl: `${process.env.BASE_URL}/results/${poll.id.toString()}`,
+        voteUrl: `${process.env.BASE_URL}/vote/${poll.id.toString()}`,
+      },
+    };
+  });
+
+  return pollsWithLinks;
 };
 
 /**

@@ -19,7 +19,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en">
         <body className={inter.className}>
           <Nav />
-          {children}
+          <main className="flex min-h-screen flex-col px-8 py-16 max-w-screen-xl m-auto">
+            {children}
+          </main>
           <Footer />
           <Toaster />
         </body>
