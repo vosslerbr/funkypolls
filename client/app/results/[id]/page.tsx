@@ -31,15 +31,11 @@ export default function Vote({ params }: { params: { id: string } }) {
   if (loading) return <h1>Loading...</h1>;
 
   if (!loading && !poll) {
-    return (
-      <main className="flex min-h-screen flex-col p-24">
-        <h1>This FunkyPoll does not exist</h1>
-      </main>
-    );
+    return <h1>This FunkyPoll does not exist</h1>;
   }
 
   return (
-    <main className="flex min-h-screen flex-col p-24">
+    <>
       <PageTitle title="Results" />
       <h2>{poll?.question}</h2>
 
@@ -50,6 +46,6 @@ export default function Vote({ params }: { params: { id: string } }) {
           </li>
         ))}
       </ul>
-    </main>
+    </>
   );
 }

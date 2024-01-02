@@ -1,20 +1,35 @@
 "use client";
 
 import PageTitle from "@/components/PageTitle";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getUserPolls } from "@/lib/actions";
+import { PollAndLinks } from "@/lib/helpers.ts/getPollAndAnswers";
 import { useUser } from "@clerk/nextjs";
-import { Poll } from "@prisma/client";
+import dayjs from "dayjs";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
-  const [userPolls, setUserPolls] = useState<Poll[]>([]);
+  const [userPolls, setUserPolls] = useState<PollAndLinks[]>([]);
 
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
   useEffect(() => {
     async function fetchPolls() {
       try {
+        setLoading(true);
+
         if (!user) return;
 
         const userPolls = await getUserPolls(user.id);
@@ -30,21 +45,80 @@ export default function Dashboard() {
     fetchPolls();
   }, [user]);
 
-  if (loading) return <h1>Loading...</h1>;
+  if (loading || !isLoaded) {
+    return (
+      <>
+        <PageTitle title="Dashboard" />
+        <p className="text-gray-500 mt-2">Loading...</p>
+      </>
+    );
+  }
 
   return (
-    <main className="flex min-h-screen flex-col   p-24">
+    <>
       <PageTitle title="Dashboard" />
-      <p className="text-gray-500">Welcome back, {user?.firstName}!</p>
 
-      <div className="mt-8">
-        <h2 className="text-xl font-bold">Your FunkyPolls</h2>
-        <ul className="mt-4">
-          {userPolls.map((poll) => (
-            <li key={poll.id}>{poll.question}</li>
-          ))}
-        </ul>
+      <div className="grid grid-cols-12 gap-4 my-4">
+        <Card className="md:col-span-6 col-span-12">
+          <CardHeader>
+            <CardTitle>Total FunkyPolls</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>{userPolls.length}</p>
+          </CardContent>
+        </Card>
+
+        <Card className="md:col-span-6 col-span-12">
+          <CardHeader>
+            <CardTitle>Active FunkyPolls</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              {
+                userPolls.filter(({ poll }) => {
+                  return dayjs(poll.expirationDate).isAfter(dayjs());
+                }).length
+              }
+            </p>
+          </CardContent>
+        </Card>
       </div>
-    </main>
+
+      <Table>
+        <TableCaption>Your FunkyPolls</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Question</TableHead>
+            <TableHead>Expiration</TableHead>
+            <TableHead>Total Votes</TableHead>
+            <TableHead>Number of Options</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {userPolls.map(({ poll, links }) => (
+            <TableRow key={poll.id}>
+              <TableCell className="font-medium">{poll.question}</TableCell>
+              <TableCell>{dayjs(poll.expirationDate).format("MM/DD/YYYY")}</TableCell>
+              <TableCell>
+                {poll.options.reduce((acc, curr) => {
+                  return acc + curr.votes;
+                }, 0)}
+              </TableCell>
+              <TableCell>{poll.options.length}</TableCell>
+              <TableCell>
+                <Link href={links.voteUrl}>
+                  <Button>Vote</Button>
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Link href={links.resultsUrl}>
+                  <Button>Results</Button>
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
   );
 }
