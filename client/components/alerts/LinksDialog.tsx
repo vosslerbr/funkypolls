@@ -1,7 +1,15 @@
 import { Links } from "@/lib/helpers.ts/getPollAndAnswers";
 
 import Link from "next/link";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 export default function LinksDialog({
   links,
@@ -23,12 +31,20 @@ export default function LinksDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Success!</DialogTitle>
-          <DialogDescription>Your FunkyPoll is ready!</DialogDescription>
+          <DialogDescription>Your FunkyPoll is ready</DialogDescription>
         </DialogHeader>
         <p>
-          You can view the results <Link href={links.resultsUrl}>here</Link>, or manage your
-          FunkyPoll from your <Link href={"/"}>dashboard</Link>.
+          You can use these links to view the results, or head to your dashboard to manage your new
+          FunkyPoll.
         </p>
+        <DialogFooter>
+          <Button variant="secondary">
+            <Link href={"/dashboard"}>Dashboard</Link>
+          </Button>
+          <Button>
+            <Link href={links.resultsUrl}>Results</Link>
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -110,7 +110,6 @@ export default function CreatePoll() {
             />
             <div className="mb-8">
               {fields.map((field, index) => (
-                // TODO idk how to limit this to 5 options max
                 <FormField
                   control={form.control}
                   key={field.id}

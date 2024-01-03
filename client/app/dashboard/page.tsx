@@ -54,6 +54,7 @@ export default function Dashboard() {
     );
   }
 
+  // TODO make this a data table with sorting, filtering, pagination, etc
   return (
     <>
       <PageTitle title="Dashboard" />
@@ -90,6 +91,7 @@ export default function Dashboard() {
           <TableRow>
             <TableHead className="w-[100px]">Question</TableHead>
             <TableHead>Expiration</TableHead>
+            <TableHead>Expired?</TableHead>
             <TableHead>Total Votes</TableHead>
             <TableHead>Number of Options</TableHead>
           </TableRow>
@@ -99,6 +101,7 @@ export default function Dashboard() {
             <TableRow key={poll.id}>
               <TableCell className="font-medium">{poll.question}</TableCell>
               <TableCell>{dayjs(poll.expirationDate).format("MM/DD/YYYY")}</TableCell>
+              <TableCell>{dayjs(poll.expirationDate).isBefore(dayjs()) ? "Yes" : "No"}</TableCell>
               <TableCell>
                 {poll.options.reduce((acc, curr) => {
                   return acc + curr.votes;
