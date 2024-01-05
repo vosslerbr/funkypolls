@@ -1,12 +1,12 @@
 "use client";
 
+import { Loading } from "@/components/Loading";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -49,7 +49,7 @@ export default function Dashboard() {
     return (
       <>
         <PageTitle title="Dashboard" />
-        <p className="text-gray-500 mt-2">Loading...</p>
+        <Loading />
       </>
     );
   }
@@ -86,7 +86,6 @@ export default function Dashboard() {
       </div>
 
       <Table>
-        <TableCaption>Your FunkyPolls</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Question</TableHead>

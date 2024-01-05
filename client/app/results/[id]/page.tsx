@@ -1,5 +1,6 @@
 "use client";
 
+import { Loading } from "@/components/Loading";
 import PageTitle from "@/components/PageTitle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPollById } from "@/lib/actions";
@@ -31,7 +32,14 @@ export default function Results({ params }: { params: { id: string } }) {
     fetchPoll();
   }, [id]);
 
-  if (loading) return <h1>Loading...</h1>;
+  if (loading) {
+    return (
+      <>
+        <PageTitle title="Results" />
+        <Loading />
+      </>
+    );
+  }
 
   if (!loading && !poll) {
     return <h1>This FunkyPoll does not exist</h1>;
@@ -62,7 +70,7 @@ export default function Results({ params }: { params: { id: string } }) {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="votes" fill="black" />
+          <Bar dataKey="votes" fill="hsl(var(--foreground))" />
         </BarChart>
       </ResponsiveContainer>
     </>

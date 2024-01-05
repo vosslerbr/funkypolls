@@ -1,5 +1,6 @@
 "use client";
 
+import { Loading } from "@/components/Loading";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { checkForPollPassword, getPollById, validatePollPassword } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PasswordFormValues, defaultValues, formSchema } from "./formSetup";
@@ -29,6 +32,8 @@ export default function Vote({ params }: { params: { id: string } }) {
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const currentDate = new Date();
 
   useEffect(() => {
     async function fetchPoll() {
@@ -79,7 +84,14 @@ export default function Vote({ params }: { params: { id: string } }) {
     }
   }
 
-  if (loading) return <h1>Loading...</h1>;
+  if (loading) {
+    return (
+      <>
+        <PageTitle title="Vote" />
+        <Loading />
+      </>
+    );
+  }
 
   // todo handle poll not found
 
@@ -113,10 +125,23 @@ export default function Vote({ params }: { params: { id: string } }) {
     );
   }
 
+  if (poll && dayjs(poll.expirationDate).isBefore(dayjs())) {
+    return (
+      <>
+        <PageTitle title="Vote" />
+        <h2 className="text-2xl font-bold mt-6">{poll?.question}</h2>
+        <p>
+          This FunkyPoll has expired. You can view the results{" "}
+          <Link href={`/results/${id}`}>here</Link>
+        </p>
+      </>
+    );
+  }
+
   return (
     <>
       <PageTitle title="Vote" />
-      <h2>{poll?.question}</h2>
+      <h2 className="text-2xl font-bold mt-6">{poll?.question}</h2>
 
       <ul className="mt-4">
         {poll?.options.map((option) => (
