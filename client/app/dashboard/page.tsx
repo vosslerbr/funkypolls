@@ -1,12 +1,12 @@
 "use client";
 
+import { Loading } from "@/components/Loading";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -45,15 +45,16 @@ export default function Dashboard() {
     fetchPolls();
   }, [user]);
 
-  if (loading || !isLoaded) {
+  if (loading || !isLoaded || !userPolls) {
     return (
       <>
         <PageTitle title="Dashboard" />
-        <p className="text-gray-500 mt-2">Loading...</p>
+        <Loading />
       </>
     );
   }
 
+  // TODO make this a data table with sorting, filtering, pagination, etc
   return (
     <>
       <PageTitle title="Dashboard" />
@@ -64,7 +65,7 @@ export default function Dashboard() {
             <CardTitle>Total FunkyPolls</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{userPolls.length}</p>
+            <p>{userPolls?.length || "-"}</p>
           </CardContent>
         </Card>
 
@@ -74,22 +75,20 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <p>
-              {
-                userPolls.filter(({ poll }) => {
-                  return dayjs(poll.expirationDate).isAfter(dayjs());
-                }).length
-              }
+              {userPolls?.filter(({ poll }) => {
+                return dayjs(poll.expirationDate).isAfter(dayjs());
+              })?.length || "-"}
             </p>
           </CardContent>
         </Card>
       </div>
 
       <Table>
-        <TableCaption>Your FunkyPolls</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Question</TableHead>
             <TableHead>Expiration</TableHead>
+            <TableHead>Expired?</TableHead>
             <TableHead>Total Votes</TableHead>
             <TableHead>Number of Options</TableHead>
           </TableRow>
@@ -99,6 +98,7 @@ export default function Dashboard() {
             <TableRow key={poll.id}>
               <TableCell className="font-medium">{poll.question}</TableCell>
               <TableCell>{dayjs(poll.expirationDate).format("MM/DD/YYYY")}</TableCell>
+              <TableCell>{dayjs(poll.expirationDate).isBefore(dayjs()) ? "Yes" : "No"}</TableCell>
               <TableCell>
                 {poll.options.reduce((acc, curr) => {
                   return acc + curr.votes;
