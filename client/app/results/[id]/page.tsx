@@ -7,6 +7,7 @@ import { getPollById } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { useEffect, useState } from "react";
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { io } from "socket.io-client";
 
 export default function Results({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -14,22 +15,36 @@ export default function Results({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [poll, setPoll] = useState<PollWithOptions | null>(null);
 
-  useEffect(() => {
-    async function fetchPoll() {
-      try {
-        const data = await getPollById(id);
+  async function fetchPoll() {
+    try {
+      const data = await getPollById(id);
 
-        console.log(data);
-
-        setPoll(data.poll);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
+      setPoll(data.poll);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchPoll();
+  const initSocket = async () => {
+    const socket = io(`http://localhost:8080/?pollId=${id}`);
+
+    // TODO add debounce to only refresh after a small delay
+    socket.on("newvote", () => {
+      fetchPoll();
+    });
+  };
+
+  useEffect(() => {
+    if (id) {
+      // init socket
+      initSocket();
+
+      // fetch poll data
+      fetchPoll();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (loading) {

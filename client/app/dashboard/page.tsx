@@ -45,7 +45,7 @@ export default function Dashboard() {
     fetchPolls();
   }, [user]);
 
-  if (loading || !isLoaded) {
+  if (loading || !isLoaded || !userPolls) {
     return (
       <>
         <PageTitle title="Dashboard" />
@@ -65,7 +65,7 @@ export default function Dashboard() {
             <CardTitle>Total FunkyPolls</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{userPolls.length}</p>
+            <p>{userPolls?.length || "-"}</p>
           </CardContent>
         </Card>
 
@@ -75,11 +75,9 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <p>
-              {
-                userPolls.filter(({ poll }) => {
-                  return dayjs(poll.expirationDate).isAfter(dayjs());
-                }).length
-              }
+              {userPolls?.filter(({ poll }) => {
+                return dayjs(poll.expirationDate).isAfter(dayjs());
+              })?.length || "-"}
             </p>
           </CardContent>
         </Card>

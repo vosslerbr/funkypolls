@@ -1,6 +1,7 @@
 "use server";
 
 import { CreatePollFormValues } from "@/app/create/formSetup";
+import axios from "axios";
 import bcrypt from "bcrypt";
 import dayjs from "dayjs";
 import getPollAndOptions from "./helpers.ts/getPollAndAnswers";
@@ -138,7 +139,7 @@ export const getPollById = async (id: string) => {
 /**
  * Handles registering a vote for a poll. Returns the poll with the updated vote count.
  */
-export const handleVote = async (id: string, optionId: string) => {
+export const handleVote = async (pollId: string, optionId: string) => {
   // increment the voteCount for the answer by 1
   await prisma.option.update({
     where: {
@@ -151,7 +152,5 @@ export const handleVote = async (id: string, optionId: string) => {
     },
   });
 
-  const pollData = await getPollAndOptions(id);
-
-  return pollData;
+  await axios.post(`http://localhost:8080/api/v1/newvote/${pollId}`);
 };

@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      <section className="flex h-full flex-col items-center mb-24">
+      <section className="flex h-full flex-col items-center mb-48 mt-24">
         <h1 className="text-5xl mb-8 font-bold">FunkyPolls</h1>
         <h2 className="text-2xl mb-8">Create your poll, cast your vote, explore results</h2>
         <Link href="/create">
