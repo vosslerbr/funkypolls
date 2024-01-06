@@ -152,5 +152,5 @@ export const handleVote = async (pollId: string, optionId: string) => {
     },
   });
 
-  await axios.post(`http://localhost:8080/api/v1/newvote/${pollId}`);
+  await axios.post(`${process.env.WS_SERVER_BASE_URL}/api/v1/newvote/${pollId}`);
 };
