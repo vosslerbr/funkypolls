@@ -106,12 +106,12 @@ export default function Dashboard() {
               </TableCell>
               <TableCell>{poll.options.length}</TableCell>
               <TableCell>
-                <Link href={links.voteUrl}>
+                <Link href={`/vote/${poll.id}`}>
                   <Button>Vote</Button>
                 </Link>
               </TableCell>
               <TableCell>
-                <Link href={links.resultsUrl}>
+                <Link href={`/results/${poll.id}`}>
                   <Button>Results</Button>
                 </Link>
               </TableCell>

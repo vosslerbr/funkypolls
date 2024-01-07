@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import dayjs from "dayjs";
 import getPollAndOptions from "./helpers.ts/getPollAndAnswers";
 import prisma from "./prisma";
+import { generateLinks } from "./utils";
 
 /**
  * Creates a new poll with the given data. Returns the poll's voting and results links
@@ -48,7 +49,7 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
 /**
  * Returns all polls for a given user
  */
-export const getUserPolls = async (userId: string) => {
+export async function getUserPolls(userId: string) {
   const polls = await prisma.poll.findMany({
     where: {
       userId,
@@ -67,20 +68,17 @@ export const getUserPolls = async (userId: string) => {
         ...poll,
         password: null,
       },
-      links: {
-        resultsUrl: `${process.env.BASE_URL}/results/${poll.id.toString()}`,
-        voteUrl: `${process.env.BASE_URL}/vote/${poll.id.toString()}`,
-      },
+      links: generateLinks(poll.id),
     };
   });
 
   return pollsWithLinks;
-};
+}
 
 /**
  * Validates the password for a poll with the given id. Returns true if there is no password on the poll or if the password is valid. Returns false otherwise.
  */
-export const validatePollPassword = async (id: string, password: string) => {
+export async function validatePollPassword(id: string, password: string) {
   const poll = await prisma.poll.findUnique({
     where: {
       id,
@@ -101,12 +99,12 @@ export const validatePollPassword = async (id: string, password: string) => {
   const isPasswordValid = await bcrypt.compare(password, poll.password);
 
   return isPasswordValid;
-};
+}
 
 /**
  * Returns true if the poll with the given id has a password. Returns false otherwise.
  */
-export const checkForPollPassword = async (id: string) => {
+export async function checkForPollPassword(id: string) {
   const poll = await prisma.poll.findUnique({
     where: {
       id,
@@ -125,21 +123,21 @@ export const checkForPollPassword = async (id: string) => {
   }
 
   return true;
-};
+}
 
 /**
  * Returns the poll with the given id
  */
-export const getPollById = async (id: string) => {
+export async function getPollById(id: string) {
   const poll = await getPollAndOptions(id);
 
   return poll;
-};
+}
 
 /**
  * Handles registering a vote for a poll. Returns the poll with the updated vote count.
  */
-export const handleVote = async (pollId: string, optionId: string) => {
+export async function handleVote(pollId: string, optionId: string) {
   // increment the voteCount for the answer by 1
   await prisma.option.update({
     where: {
@@ -153,4 +151,4 @@ export const handleVote = async (pollId: string, optionId: string) => {
   });
 
   await axios.post(`${process.env.WS_SERVER_BASE_URL}/api/v1/newvote/${pollId}`);
-};
+}
