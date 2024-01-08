@@ -44,6 +44,8 @@ const formSchema = z.object({
   userId: z.string(),
 });
 
+// TODO figure out a way to create actual dates from each of these when submitting the form
+// ? i.e. if the user selects "1 week", the expiration date should be 1 week from time of submission
 const expirationOptions = [
   "5 minutes",
   "10 minutes",

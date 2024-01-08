@@ -7,9 +7,9 @@ import { checkForPollPassword, getPollById } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Expired } from "./Expired";
-import PasswordForm from "./PasswordForm";
-import VoteForm from "./VoteForm";
+import { Expired } from "./_components/Expired";
+import PasswordForm from "./_components/PasswordForm";
+import VoteForm from "./_components/VoteForm";
 
 // TODO continue refactor to look more like the results page
 // ? this way we can set metadata

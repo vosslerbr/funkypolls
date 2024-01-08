@@ -1,6 +1,6 @@
 "use server";
 
-import { CreatePollFormValues } from "@/app/create/formSetup";
+import { CreatePollFormValues } from "@/app/create/_helpers/formSetup";
 import axios from "axios";
 import bcrypt from "bcrypt";
 import dayjs from "dayjs";

@@ -1,6 +1,6 @@
 import PageTitle from "@/components/PageTitle";
 import { Metadata } from "next";
-import PollResults from "./PollResults";
+import PollResults from "./_components/PollResults";
 
 export const metadata: Metadata = {
   title: "FunkyPolls | Results",

@@ -28,7 +28,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { createFunkyPoll } from "../../lib/actions";
-import { CreatePollFormValues, defaultValues, expirationOptions, formSchema } from "./formSetup";
+import {
+  CreatePollFormValues,
+  defaultValues,
+  expirationOptions,
+  formSchema,
+} from "./_helpers/formSetup";
 
 // TODO continue refactor to look more like the results page
 // ? this way we can set metadata
