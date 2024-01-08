@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "See the results of a poll.",
 };
 
-export default function Results({ params }: { params: { id: string } }) {
+export default function ResultsPage({ params }: { params: { id: string } }) {
   const { id } = params;
 
   return (

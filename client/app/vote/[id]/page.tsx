@@ -13,7 +13,7 @@ import VoteForm from "./_components/VoteForm";
 
 // TODO continue refactor to look more like the results page
 // ? this way we can set metadata
-export default function Vote({ params }: { params: { id: string } }) {
+export default function VotePage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [loading, setLoading] = useState(true);
   const [poll, setPoll] = useState<PollWithOptions | null>(null);

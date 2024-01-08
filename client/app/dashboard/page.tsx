@@ -11,7 +11,6 @@ export default function DashboardPage() {
   return (
     <>
       <PageTitle title="Dashboard" />
-
       <Dashboard />
     </>
   );

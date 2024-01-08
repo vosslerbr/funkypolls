@@ -9,7 +9,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "FunkyPolls",
+  title: "FunkyPolls | Home",
   description: "Create your poll, cast your vote, explore results.",
 };
 

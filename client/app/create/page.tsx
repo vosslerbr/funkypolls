@@ -7,11 +7,10 @@ export const metadata: Metadata = {
   description: "Create a new FunkyPoll.",
 };
 
-export default function CreatePoll() {
+export default function CreatePollPage() {
   return (
     <>
       <PageTitle title="Create a FunkyPoll" />
-
       <CreateForm />
     </>
   );
