@@ -3,14 +3,29 @@ import { z } from "zod";
 
 const currentDate = dayjs().toDate();
 
-const formSchema = z.object({
+const passwordFormSchema = z.object({
   password: z.string(),
 });
 
-type PasswordFormValues = z.infer<typeof formSchema>;
+type PasswordFormValues = z.infer<typeof passwordFormSchema>;
 
-const defaultValues: PasswordFormValues = {
+const passwordDefaultValues: PasswordFormValues = {
   password: "",
 };
 
-export { currentDate, defaultValues, formSchema, type PasswordFormValues };
+// since we are using the option ids as the enum values, we need to cast the array instead of hardcoding the values
+const generateVoteFormSchema = (optionIds: string[]) => {
+  return z.object({
+    optionId: z.enum(optionIds as [string, ...string[]], {
+      required_error: "Please select an option",
+    }),
+  });
+};
+
+export {
+  currentDate,
+  generateVoteFormSchema,
+  passwordDefaultValues,
+  passwordFormSchema,
+  type PasswordFormValues,
+};

@@ -5,9 +5,11 @@ const router = express.Router();
 
 router.post("/newvote/:id", (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id: pollId } = req.params;
 
-    io.to(id).emit("newvote");
+    // emit a newvote event to the poll's room
+    // this will trigger the client to fetch the latest results
+    io.to(pollId).emit("newvote");
 
     res.status(200).send("OK");
   } catch (error) {

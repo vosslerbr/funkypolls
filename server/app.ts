@@ -24,11 +24,13 @@ app.use(errorHandler);
 
 const httpServer = createServer(app);
 
+console.log("Starting websocket server");
 export const io = new Server(httpServer, {
   cors: {
     origin: "*",
   },
 });
+console.log("Websocket server started");
 
 io.on("connection", (socket) => {
   console.log("Socket connected, current number of connected clients: ", io.engine.clientsCount);
@@ -39,8 +41,6 @@ io.on("connection", (socket) => {
   // join the poll room
   socket.join(pollId);
 
-  io.to(pollId).emit("newevent", "Event to poll with id: " + pollId);
-
   socket.on("disconnect", () => {
     console.log(
       "Socket disconnected, current number of connected clients: ",
@@ -50,5 +50,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Express app listening on port ${port}`);
+  console.log(`Server listening on port ${port}`);
 });

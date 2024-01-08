@@ -32,7 +32,9 @@ const formSchema = z.object({
     .max(5, {
       message: "You cannot have more than five options",
     }),
-  expiration: z.date().min(currentDate),
+  expiration: z.string({
+    required_error: "Please select an expiration",
+  }),
   password: z
     .string()
     .min(4, {
@@ -42,14 +44,29 @@ const formSchema = z.object({
   userId: z.string(),
 });
 
+const expirationOptions = [
+  "5 minutes",
+  "10 minutes",
+  "15 minutes",
+  "30 minutes",
+  "1 hour",
+  "2 hours",
+  "4 hours",
+  "8 hours",
+  "12 hours",
+  "1 day (24 hours)",
+  "1 week",
+  "1 month (30 days)",
+];
+
 type CreatePollFormValues = z.infer<typeof formSchema>;
 
 const defaultValues: CreatePollFormValues = {
   question: "",
   options: [{ value: "" }, { value: "" }],
-  expiration: thirtyDaysFromNow,
+  expiration: expirationOptions[0],
   password: undefined,
   userId: "",
 };
 
-export { currentDate, defaultValues, formSchema, type CreatePollFormValues };
+export { currentDate, defaultValues, expirationOptions, formSchema, type CreatePollFormValues };
