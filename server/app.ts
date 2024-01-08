@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import applyMiddleware from "./middleware";
 import errorHandler from "./middleware/globalErrorsMiddleware";
 import v1Routes from "./routes/v1/v1";
-import { createServer } from "http";
-import { Server } from "socket.io";
 
 require("dotenv").config();
 
@@ -33,7 +33,7 @@ export const io = new Server(httpServer, {
 console.log("Websocket server started");
 
 io.on("connection", (socket) => {
-  console.log("Socket connected");
+  console.log("Socket connected, current number of connected clients: ", io.engine.clientsCount);
 
   // get the Poll ID from the client
   const pollId = socket.handshake.query.pollId as string;
@@ -42,7 +42,10 @@ io.on("connection", (socket) => {
   socket.join(pollId);
 
   socket.on("disconnect", () => {
-    console.log("Socket disconnected");
+    console.log(
+      "Socket disconnected, current number of connected clients: ",
+      io.engine.clientsCount
+    );
   });
 });
 

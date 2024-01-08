@@ -1,5 +1,6 @@
 import { Option, Poll } from "@prisma/client";
 import prisma from "../prisma";
+import { generateLinks } from "../utils";
 
 export interface Links {
   resultsUrl: string;
@@ -34,10 +35,7 @@ const getPollAndOptions = async (pollId: string): Promise<PollAndLinks> => {
 
   const data = {
     poll,
-    links: {
-      resultsUrl: `${process.env.BASE_URL}/results/${poll.id.toString()}`,
-      voteUrl: `${process.env.BASE_URL}/vote/${poll.id.toString()}`,
-    },
+    links: generateLinks(poll.id),
   };
 
   return data;
