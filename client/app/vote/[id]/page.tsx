@@ -11,6 +11,8 @@ import { Expired } from "./Expired";
 import PasswordForm from "./PasswordForm";
 import VoteForm from "./VoteForm";
 
+// TODO continue refactor to look more like the results page
+// ? this way we can set metadata
 export default function Vote({ params }: { params: { id: string } }) {
   const { id } = params;
   const [loading, setLoading] = useState(true);

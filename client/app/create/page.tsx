@@ -3,7 +3,6 @@
 import PageTitle from "@/components/PageTitle";
 import LinksDialog from "@/components/alerts/LinksDialog";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -14,19 +13,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Links } from "@/lib/helpers.ts/getPollAndAnswers";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { createFunkyPoll } from "../../lib/actions";
-import { CreatePollFormValues, currentDate, defaultValues, formSchema } from "./formSetup";
+import { CreatePollFormValues, defaultValues, expirationOptions, formSchema } from "./formSetup";
 
+// TODO continue refactor to look more like the results page
+// ? this way we can set metadata
 export default function CreatePoll() {
   const [showLinksDialog, setShowLinksDialog] = useState(false);
   const [links, setLinks] = useState<Links | null>(null);
@@ -146,30 +151,20 @@ export default function CreatePoll() {
               render={({ field }) => (
                 <FormItem className="flex flex-col mb-8">
                   <FormLabel>Expiration</FormLabel>
-                  <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          disabled={submitting}
-                          variant={"outline"}
-                          className={cn(
-                            "w-[280px] justify-start text-left font-normal",
-                            !field && "text-muted-foreground"
-                          )}>
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date <= currentDate}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Accept votes for..." />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {expirationOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
                   <FormMessage />
                 </FormItem>

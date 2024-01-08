@@ -19,6 +19,8 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+// TODO continue refactor to look more like the results page
+// ? this way we can set metadata
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [userPolls, setUserPolls] = useState<PollAndLinks[]>([]);
