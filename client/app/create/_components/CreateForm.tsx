@@ -24,6 +24,7 @@ import { Links } from "@/lib/helpers.ts/getPollAndAnswers";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { createFunkyPoll } from "../../../lib/actions";
@@ -68,6 +69,9 @@ export default function CreateForm() {
         ...values,
         options: values.options.filter((option) => option.value),
         userId: user.id,
+        expirationDate:
+          expirationOptions.find((option) => option.label === values.expiration)?.getDate() ||
+          dayjs().add(1, "day").toDate(),
       };
 
       const links = await createFunkyPoll(sanitizedValues);
@@ -159,8 +163,8 @@ export default function CreateForm() {
                     </FormControl>
                     <SelectContent>
                       {expirationOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
+                        <SelectItem key={option.label} value={option.label}>
+                          {option.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

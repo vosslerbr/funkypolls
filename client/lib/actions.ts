@@ -3,7 +3,6 @@
 import { CreatePollFormValues } from "@/app/create/_helpers/formSetup";
 import axios from "axios";
 import bcrypt from "bcrypt";
-import dayjs from "dayjs";
 import getPollAndOptions from "./helpers.ts/getPollAndAnswers";
 import prisma from "./prisma";
 import { generateLinks } from "./utils";
@@ -12,7 +11,7 @@ import { generateLinks } from "./utils";
  * Creates a new poll with the given data. Returns the poll's voting and results links
  */
 export const createFunkyPoll = async (data: CreatePollFormValues) => {
-  const { question, options, expiration, userId, password } = data;
+  const { question, options, userId, password, expirationDate } = data;
 
   // encrypt password
   const encryptedPassword = password ? await bcrypt.hash(password, 10) : null;
@@ -20,9 +19,7 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
   const poll = await prisma.poll.create({
     data: {
       question,
-      expirationDate: expiration
-        ? dayjs(expiration).toISOString()
-        : dayjs().add(30, "day").toISOString(),
+      expirationDate: expirationDate.toISOString(),
       userId,
       password: encryptedPassword,
     },
