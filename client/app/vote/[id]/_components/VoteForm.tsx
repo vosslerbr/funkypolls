@@ -27,7 +27,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { generateVoteFormSchema } from "./formSetup";
+import { generateVoteFormSchema } from "../_helpers/formSetup";
 
 export default function VoteForm({
   id,

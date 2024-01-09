@@ -13,7 +13,11 @@ import { getPollById, validatePollPassword } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { PasswordFormValues, passwordDefaultValues, passwordFormSchema } from "./formSetup";
+import {
+  PasswordFormValues,
+  passwordDefaultValues,
+  passwordFormSchema,
+} from "../_helpers/formSetup";
 
 export default function PasswordForm({
   id,

@@ -2,7 +2,7 @@ import FAQCards from "@/components/FAQCards";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       <section className="flex h-full flex-col items-center mb-48 mt-24">

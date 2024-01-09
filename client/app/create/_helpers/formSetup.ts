@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import { z } from "zod";
 
 const currentDate = dayjs().toDate();
-const thirtyDaysFromNow = dayjs().add(30, "day").toDate();
 
 const formSchema = z.object({
   question: z
@@ -35,6 +34,7 @@ const formSchema = z.object({
   expiration: z.string({
     required_error: "Please select an expiration",
   }),
+  expirationDate: z.date(),
   password: z
     .string()
     .min(4, {
@@ -44,19 +44,20 @@ const formSchema = z.object({
   userId: z.string(),
 });
 
+// ? if the user selects "1 week", the expiration date should be 1 week from time of submission
 const expirationOptions = [
-  "5 minutes",
-  "10 minutes",
-  "15 minutes",
-  "30 minutes",
-  "1 hour",
-  "2 hours",
-  "4 hours",
-  "8 hours",
-  "12 hours",
-  "1 day (24 hours)",
-  "1 week",
-  "1 month (30 days)",
+  { label: "5 minutes", getDate: () => dayjs().add(5, "minutes").toDate() },
+  { label: "10 minutes", getDate: () => dayjs().add(10, "minutes").toDate() },
+  { label: "15 minutes", getDate: () => dayjs().add(15, "minutes").toDate() },
+  { label: "30 minutes", getDate: () => dayjs().add(30, "minutes").toDate() },
+  { label: "1 hour", getDate: () => dayjs().add(1, "hour").toDate() },
+  { label: "2 hours", getDate: () => dayjs().add(2, "hours").toDate() },
+  { label: "4 hours", getDate: () => dayjs().add(4, "hours").toDate() },
+  { label: "8 hours", getDate: () => dayjs().add(8, "hours").toDate() },
+  { label: "12 hours", getDate: () => dayjs().add(12, "hours").toDate() },
+  { label: "1 day", getDate: () => dayjs().add(1, "day").toDate() },
+  { label: "1 week", getDate: () => dayjs().add(1, "week").toDate() },
+  { label: "1 month", getDate: () => dayjs().add(1, "month").toDate() },
 ];
 
 type CreatePollFormValues = z.infer<typeof formSchema>;
@@ -64,7 +65,8 @@ type CreatePollFormValues = z.infer<typeof formSchema>;
 const defaultValues: CreatePollFormValues = {
   question: "",
   options: [{ value: "" }, { value: "" }],
-  expiration: expirationOptions[0],
+  expiration: expirationOptions[0].label,
+  expirationDate: new Date(),
   password: undefined,
   userId: "",
 };

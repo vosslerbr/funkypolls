@@ -1,13 +1,13 @@
 import PageTitle from "@/components/PageTitle";
 import { Metadata } from "next";
-import PollResults from "./PollResults";
+import PollResults from "./_components/PollResults";
 
 export const metadata: Metadata = {
   title: "FunkyPolls | Results",
   description: "See the results of a poll.",
 };
 
-export default function Results({ params }: { params: { id: string } }) {
+export default function ResultsPage({ params }: { params: { id: string } }) {
   const { id } = params;
 
   return (
