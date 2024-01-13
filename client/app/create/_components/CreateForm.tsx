@@ -43,7 +43,6 @@ export default function CreateForm() {
   const { toast } = useToast();
   const { user } = useUser();
 
-  // TODO we want expiration to be based on a selected lifetime (1min, 5min, 1hr, 1day, 1week, 1month, 1year...) instead of a date
   const form = useForm<CreatePollFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,

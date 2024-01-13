@@ -14,6 +14,7 @@ generator client {
 model Poll {
   id        String      @id @default(cuid())
   question     String
+  expiration String @default("n/a")
   expirationDate DateTime @default(now())
   options   Option[]
   password  String? // optional password to protect poll

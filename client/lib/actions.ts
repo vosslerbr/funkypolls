@@ -11,7 +11,7 @@ import { generateLinks } from "./utils";
  * Creates a new poll with the given data. Returns the poll's voting and results links
  */
 export const createFunkyPoll = async (data: CreatePollFormValues) => {
-  const { question, options, userId, password, expirationDate } = data;
+  const { question, options, userId, password, expirationDate, expiration } = data;
 
   // encrypt password
   const encryptedPassword = password ? await bcrypt.hash(password, 10) : null;
@@ -20,6 +20,7 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
     data: {
       question,
       expirationDate: expirationDate.toISOString(),
+      expiration,
       userId,
       password: encryptedPassword,
     },
@@ -99,7 +100,7 @@ export async function validatePollPassword(id: string, password: string) {
 }
 
 /**
- * Returns true if the poll with the given id has a password. Returns false otherwise.
+ * Checks for a poll to exist and if it requires a password. Returns an object with the pollFound and passwordRequired properties.
  */
 export async function checkForPollPassword(id: string) {
   const poll = await prisma.poll.findUnique({
@@ -112,14 +113,23 @@ export async function checkForPollPassword(id: string) {
   });
 
   if (!poll) {
-    return false;
+    return {
+      pollFound: false,
+      passwordRequired: false,
+    };
   }
 
   if (!poll.password) {
-    return false;
+    return {
+      pollFound: true,
+      passwordRequired: false,
+    };
   }
 
-  return true;
+  return {
+    pollFound: true,
+    passwordRequired: true,
+  };
 }
 
 /**

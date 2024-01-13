@@ -57,7 +57,7 @@ export default function Dashboard() {
             <CardTitle>Total FunkyPolls</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{userPolls?.length || "-"}</p>
+            <p>{userPolls?.length || "None, create a FunkyPoll to get started!"}</p>
           </CardContent>
         </Card>
 
@@ -78,18 +78,20 @@ export default function Dashboard() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Question</TableHead>
-            <TableHead>Expiration</TableHead>
+            <TableHead className="w-[350px]">Question</TableHead>
+            <TableHead>Open For</TableHead>
+            <TableHead>Expires At</TableHead>
             <TableHead>Expired?</TableHead>
-            <TableHead>Total Votes</TableHead>
-            <TableHead>Number of Options</TableHead>
+            <TableHead>Votes</TableHead>
+            <TableHead>Options</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {userPolls.map(({ poll, links }) => (
             <TableRow key={poll.id}>
               <TableCell className="font-medium">{poll.question}</TableCell>
-              <TableCell>{dayjs(poll.expirationDate).format("MM/DD/YYYY")}</TableCell>
+              <TableCell>{poll.expiration}</TableCell>
+              <TableCell>{dayjs(poll.expirationDate).format("MM/DD/YYYY hh:mm a")}</TableCell>
               <TableCell>{dayjs(poll.expirationDate).isBefore(dayjs()) ? "Yes" : "No"}</TableCell>
               <TableCell>
                 {poll.options.reduce((acc, curr) => {
