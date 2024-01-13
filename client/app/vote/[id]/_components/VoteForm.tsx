@@ -1,4 +1,3 @@
-import PageTitle from "@/components/PageTitle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -86,7 +85,6 @@ export default function VoteForm({
 
   return (
     <>
-      <PageTitle title="Vote" />
       <h2 className="text-2xl font-bold mt-6">{poll?.question}</h2>
 
       <Dialog
