@@ -21,7 +21,7 @@ import { toast } from "@/components/ui/use-toast";
 import { getPollById, handleVote } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -150,9 +150,14 @@ export default function VoteForm({
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={submitting}>
-                Submit
-              </Button>
+              {submitting ? (
+                <Button type="submit" disabled={true}>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving your vote...
+                </Button>
+              ) : (
+                <Button type="submit">Submit</Button>
+              )}
             </form>
           </Form>
         </div>
