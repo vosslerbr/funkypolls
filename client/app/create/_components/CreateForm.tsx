@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { createFunkyPoll } from "../../../lib/actions";
@@ -154,7 +155,10 @@ export default function CreateForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-col mb-8">
                   <FormLabel>Expiration</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={submitting}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Accept votes for..." />
@@ -197,9 +201,14 @@ export default function CreateForm() {
               )}
             />
 
-            <Button type="submit" disabled={submitting}>
-              Submit
-            </Button>
+            {submitting ? (
+              <Button type="submit" disabled={true}>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </Button>
+            ) : (
+              <Button type="submit">Submit</Button>
+            )}
           </form>
         </Form>
       </div>
