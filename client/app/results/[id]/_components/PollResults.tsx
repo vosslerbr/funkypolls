@@ -26,12 +26,18 @@ export default function PollResults({ id }: { id: string }) {
     }
   }
 
+  let timer: NodeJS.Timeout | undefined = undefined;
+
   const initSocket = async () => {
     const socket = io(`${process.env.NEXT_PUBLIC_WS_SERVER_BASE_URL}/?pollId=${id}`);
 
     // TODO add debounce to only refresh after a small delay
     socket.on("newvote", () => {
-      fetchPoll();
+      clearTimeout(timer);
+
+      timer = setTimeout(() => {
+        fetchPoll();
+      }, 1000);
     });
   };
 
