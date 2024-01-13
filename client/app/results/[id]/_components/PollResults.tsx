@@ -62,7 +62,7 @@ export default function PollResults({ id }: { id: string }) {
     <>
       <h2 className="text-2xl font-bold mt-6">{poll?.question}</h2>
 
-      <div className="grid grid-cols-12 gap-4 my-4">
+      <div className="grid lg:grid-cols-12 md:grid-cols-8 grid-cols-4 gap-4 my-4">
         {poll?.options.map(({ text, votes }, index) => (
           <Card className="col-span-4" key={`option${index}`}>
             <CardHeader>
@@ -85,7 +85,7 @@ export default function PollResults({ id }: { id: string }) {
         </BarChart>
       </ResponsiveContainer>
 
-      <div className="grid grid-cols-12 gap-4 mt-16">
+      <div className="grid lg:grid-cols-12  grid-cols-6 gap-4 mt-16">
         <Card className="col-span-6">
           <CardHeader>
             <CardTitle>Vote URL</CardTitle>

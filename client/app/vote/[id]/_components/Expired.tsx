@@ -19,7 +19,7 @@ export function Expired({ id, poll }: { id: string; poll: PollWithOptions }) {
         </AlertDescription>
       </Alert>
       <Link href={`/results/${id}`} className="mt-4">
-        <Button>View Results</Button>
+        <Button className="sm:w-auto w-full">View Results</Button>
       </Link>
     </>
   );

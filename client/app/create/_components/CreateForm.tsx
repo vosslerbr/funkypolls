@@ -202,12 +202,14 @@ export default function CreateForm() {
             />
 
             {submitting ? (
-              <Button type="submit" disabled={true}>
+              <Button type="submit" disabled={true} className="sm:w-auto w-full">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
               </Button>
             ) : (
-              <Button type="submit">Submit</Button>
+              <Button type="submit" className="sm:w-auto w-full">
+                Submit
+              </Button>
             )}
           </form>
         </Form>

@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className={inter.className}>
           <Nav />
 
-          <main className="flex min-h-screen flex-col px-8 py-24 max-w-screen-xl m-auto">
+          <main className="flex min-h-screen flex-col md:px-8 px-4 py-24 max-w-screen-xl m-auto">
             {children}
           </main>
           <Footer />
