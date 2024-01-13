@@ -81,7 +81,9 @@ export default function PasswordForm({
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="sm:w-auto w-full">
+            Submit
+          </Button>
         </form>
       </Form>
     </div>

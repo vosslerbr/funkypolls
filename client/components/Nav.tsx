@@ -59,7 +59,7 @@ export default function Nav() {
 
   return (
     <nav className="sticky top-0 bg-inherit shadow z-50">
-      <div className="flex flex-row justify-between items-center px-8 py-4 max-w-screen-xl m-auto">
+      <div className="flex flex-row justify-between items-center md:px-8 px-4 py-4 max-w-screen-xl m-auto">
         <Link href="/">
           <h1 className="text-2xl font-bold">FunkyPolls</h1>
         </Link>

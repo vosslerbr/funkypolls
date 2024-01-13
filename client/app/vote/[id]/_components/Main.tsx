@@ -16,8 +16,22 @@ export default function VoteMain({ id }: { id: string }) {
   const [optionIds, setOptionIds] = useState<string[]>([]);
   const [validated, setValidated] = useState(false);
   const [pollFound, setPollFound] = useState(true);
+  const [nowExpired, setNowExpired] = useState(false);
 
   const isExpired = poll && dayjs(poll.expirationDate).isBefore(dayjs());
+
+  // check each second if the poll is expired
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (poll) {
+        const isExpired = dayjs(poll.expirationDate).isBefore(dayjs());
+
+        setNowExpired(isExpired);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [poll]);
 
   useEffect(() => {
     async function fetchPoll() {
@@ -47,6 +61,28 @@ export default function VoteMain({ id }: { id: string }) {
 
     fetchPoll();
   }, [id]);
+
+  useEffect(() => {
+    const isExpiredOnFetch = poll !== null && dayjs(poll.expirationDate).isBefore(dayjs());
+
+    setNowExpired(isExpiredOnFetch);
+
+    const interval = setInterval(() => {
+      console.log("checking if poll is expired");
+
+      if (poll) {
+        const isNowExpired = dayjs(poll.expirationDate).isBefore(dayjs());
+
+        setNowExpired(isNowExpired);
+
+        if (isNowExpired) {
+          clearInterval(interval);
+        }
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [poll]);
 
   if (loading) {
     return <Loading />;

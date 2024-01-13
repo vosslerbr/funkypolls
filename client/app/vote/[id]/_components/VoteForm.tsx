@@ -116,7 +116,7 @@ export default function VoteForm({
             </AlertDescription>
           </Alert>
           <Link href={`/results/${id}`} className="mt-4">
-            <Button>View Results</Button>
+            <Button className="sm:w-auto w-full">View Results</Button>
           </Link>
         </>
       ) : (
@@ -151,12 +151,14 @@ export default function VoteForm({
                 )}
               />
               {submitting ? (
-                <Button type="submit" disabled={true}>
+                <Button type="submit" disabled={true} className="sm:w-auto w-full">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Saving your vote...
                 </Button>
               ) : (
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className="sm:w-auto w-full">
+                  Submit
+                </Button>
               )}
             </form>
           </Form>
