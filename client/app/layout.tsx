@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import MobileNav from "@/components/MobileNav";
 import Nav from "@/components/Nav";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en">
         <body className={inter.className}>
           <Nav />
+          <MobileNav />
 
           <main className="flex min-h-screen flex-col md:px-8 px-4 py-24 max-w-screen-xl m-auto">
             {children}
