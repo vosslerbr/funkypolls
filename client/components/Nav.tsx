@@ -1,10 +1,11 @@
 "use client";
 
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
-import { Loader2 } from "lucide-react";
+import { Loader2, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 export default function Nav() {
   const { isSignedIn, user, isLoaded } = useUser();
@@ -58,18 +59,41 @@ export default function Nav() {
   }
 
   return (
-    <nav className="sticky top-0 bg-inherit shadow z-50">
-      <div className="flex flex-row justify-between items-center md:px-8 px-4 py-4 max-w-screen-xl m-auto">
-        <Link href="/">
-          <h1 className="text-2xl font-bold">FunkyPolls</h1>
-        </Link>
+    <>
+      <nav className="sm:block hidden sticky top-0 bg-inherit shadow z-50">
+        <div className="flex flex-row justify-between items-center md:px-8 px-4 py-4 max-w-screen-xl m-auto">
+          <Link href="/">
+            <h1 className="text-2xl font-bold">FunkyPolls</h1>
+          </Link>
 
-        {!isLoaded ? (
-          <Loader2 className="w-10 h-10 text-gray-500 animate-spin" />
-        ) : (
-          renderUserButton()
-        )}
-      </div>
-    </nav>
+          {!isLoaded ? (
+            <Loader2 className="w-10 h-10 text-gray-500 animate-spin" />
+          ) : (
+            renderUserButton()
+          )}
+        </div>
+      </nav>
+
+      <nav className="sm:hidden block sticky top-0 bg-inherit shadow z-50">
+        <div className="flex flex-row justify-between items-center md:px-8 px-4 py-4 max-w-screen-xl m-auto">
+          <Link href="/">
+            <h1 className="text-2xl font-bold">FunkyPolls</h1>
+          </Link>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Menu className="w-10 h-10" />
+            </SheetTrigger>
+            <SheetContent>
+              {!isLoaded ? (
+                <Loader2 className="w-10 h-10 text-gray-500 animate-spin" />
+              ) : (
+                renderUserButton()
+              )}
+            </SheetContent>
+          </Sheet>
+        </div>
+      </nav>
+    </>
   );
 }
