@@ -1,7 +1,7 @@
 "use client";
 
 import { Loading } from "@/components/Loading";
-import { checkForPollPassword, getPollById } from "@/lib/actions";
+import { checkForPollPasscode, getPollById } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -36,7 +36,7 @@ export default function VoteMain({ id }: { id: string }) {
   useEffect(() => {
     async function fetchPoll() {
       try {
-        const { passwordRequired, pollFound } = await checkForPollPassword(id);
+        const { requirePasscodeToView, pollFound } = await checkForPollPasscode(id);
 
         if (!pollFound) {
           setPollFound(false);
@@ -44,7 +44,7 @@ export default function VoteMain({ id }: { id: string }) {
         }
 
         // don't fetch the poll if it requires a password
-        if (passwordRequired) return;
+        if (requirePasscodeToView) return;
 
         const data = await getPollById(id);
 

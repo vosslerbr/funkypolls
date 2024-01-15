@@ -17,7 +17,8 @@ model Poll {
   expiration String @default("n/a")
   expirationDate DateTime @default(now())
   options   Option[]
-  password  String? // optional password to protect poll
+  passcode  String
+  requirePasscodeToView Boolean @default(false)
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

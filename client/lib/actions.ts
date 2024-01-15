@@ -1,6 +1,7 @@
 "use server";
 
 import { CreatePollFormValues } from "@/app/create/_helpers/formSetup";
+import { auth } from "@clerk/nextjs";
 import axios from "axios";
 import bcrypt from "bcrypt";
 import getPollAndOptions from "./helpers.ts/getPollAndAnswers";
@@ -11,10 +12,16 @@ import { generateLinks } from "./utils";
  * Creates a new poll with the given data. Returns the poll's voting and results links
  */
 export const createFunkyPoll = async (data: CreatePollFormValues) => {
-  const { question, options, userId, password, expirationDate, expiration } = data;
+  const { question, options, userId, passcode, expirationDate, expiration } = data;
+
+  const { userId: loggedInUserId } = auth();
+
+  if (!userId || userId !== loggedInUserId) {
+    throw new Error("You can only create polls for your own account");
+  }
 
   // encrypt password
-  const encryptedPassword = password ? await bcrypt.hash(password, 10) : null;
+  const encryptedPasscode = await bcrypt.hash(passcode, 10);
 
   const poll = await prisma.poll.create({
     data: {
@@ -22,7 +29,7 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
       expirationDate: expirationDate.toISOString(),
       expiration,
       userId,
-      password: encryptedPassword,
+      passcode: encryptedPasscode,
     },
   });
 
@@ -48,6 +55,12 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
  * Returns all polls for a given user
  */
 export async function getUserPolls(userId: string) {
+  const { userId: loggedInUserId } = auth();
+
+  if (!userId || userId !== loggedInUserId) {
+    throw new Error("You can only view your own polls");
+  }
+
   const polls = await prisma.poll.findMany({
     where: {
       userId,
@@ -73,16 +86,13 @@ export async function getUserPolls(userId: string) {
   return pollsWithLinks;
 }
 
-/**
- * Validates the password for a poll with the given id. Returns true if there is no password on the poll or if the password is valid. Returns false otherwise.
- */
-export async function validatePollPassword(id: string, password: string) {
+export async function validatePollPasscode(id: string, passcode: string) {
   const poll = await prisma.poll.findUnique({
     where: {
       id,
     },
     select: {
-      password: true,
+      passcode: true,
     },
   });
 
@@ -90,45 +100,31 @@ export async function validatePollPassword(id: string, password: string) {
     return false;
   }
 
-  if (!poll.password) {
-    return true;
-  }
+  const isPasscodeValid = await bcrypt.compare(passcode, poll.passcode);
 
-  const isPasswordValid = await bcrypt.compare(password, poll.password);
-
-  return isPasswordValid;
+  return isPasscodeValid;
 }
 
-/**
- * Checks for a poll to exist and if it requires a password. Returns an object with the pollFound and passwordRequired properties.
- */
-export async function checkForPollPassword(id: string) {
+export async function checkForPollPasscode(id: string) {
   const poll = await prisma.poll.findUnique({
     where: {
       id,
     },
     select: {
-      password: true,
+      requirePasscodeToView: true,
     },
   });
 
   if (!poll) {
     return {
       pollFound: false,
-      passwordRequired: false,
-    };
-  }
-
-  if (!poll.password) {
-    return {
-      pollFound: true,
-      passwordRequired: false,
+      requirePasscodeToView: false,
     };
   }
 
   return {
     pollFound: true,
-    passwordRequired: true,
+    requirePasscodeToView: poll.requirePasscodeToView,
   };
 }
 
@@ -144,7 +140,17 @@ export async function getPollById(id: string) {
 /**
  * Handles registering a vote for a poll. Returns the poll with the updated vote count.
  */
-export async function handleVote(pollId: string, optionId: string) {
+export async function handleVote({
+  pollId,
+  optionId,
+  passcode,
+}: {
+  pollId: string;
+  optionId: string;
+  passcode: string;
+}) {
+  // TODO validate with poll passcode
+
   // increment the voteCount for the answer by 1
   await prisma.option.update({
     where: {

@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { getPollById, validatePollPassword } from "@/lib/actions";
+import { getPollById, validatePollPasscode } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ import {
   passwordFormSchema,
 } from "../_helpers/formSetup";
 
+// TODO rename all this stuff to "passcode" instead of "password"
 export default function PasswordForm({
   id,
   setPoll,
@@ -39,7 +40,7 @@ export default function PasswordForm({
     try {
       const { password } = values;
 
-      const isValid = await validatePollPassword(id, password);
+      const isValid = await validatePollPasscode(id, password);
 
       setValidated(isValid);
 

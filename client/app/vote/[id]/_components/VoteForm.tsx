@@ -52,7 +52,7 @@ export default function VoteForm({
   async function onVoteSubmit(values: z.infer<typeof voteFormSchema>) {
     try {
       setSubmitting(true);
-      await handleVote(id, values.optionId);
+      await handleVote({ pollId: id, optionId: values.optionId, passcode: "" }); // TODO
 
       const data = await getPollById(id);
 

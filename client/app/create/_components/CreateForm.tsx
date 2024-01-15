@@ -178,28 +178,7 @@ export default function CreateForm() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem className="mb-8">
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Password"
-                      {...field}
-                      disabled={submitting}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    This is optional. If given a password, voters will have to enter it before they
-                    can vote. Leave blank if you want your poll to be public.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* // TODO checkbox for requirePasscodeToView */}
 
             {submitting ? (
               <Button type="submit" disabled={true} className="sm:w-auto w-full">
