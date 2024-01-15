@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Expired } from "./Expired";
 import NotFound from "./NotFound";
-import PasswordForm from "./PasswordForm";
+import PasscodeForm from "./PasscodeForm";
 import VoteForm from "./VoteForm";
 
 export default function VoteMain({ id }: { id: string }) {
@@ -30,7 +30,7 @@ export default function VoteMain({ id }: { id: string }) {
           return;
         }
 
-        // don't fetch the poll if it requires a password
+        // don't fetch the poll if it requires a passcode
         if (requirePasscodeToView) return;
 
         const data = await getPollById(id);
@@ -73,11 +73,11 @@ export default function VoteMain({ id }: { id: string }) {
     return <Loading />;
   }
 
-  // requires password and not validated
-  // TODO getting a weird flash now when successfully entering a password
+  // requires passcode and not validated
+  // TODO getting a weird flash now when successfully entering a passcode
   if (pollFound && !validated) {
     return (
-      <PasswordForm
+      <PasscodeForm
         id={id}
         setPoll={setPoll}
         setOptionIds={setOptionIds}

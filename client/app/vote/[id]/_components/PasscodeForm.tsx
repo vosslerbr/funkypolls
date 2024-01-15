@@ -14,13 +14,12 @@ import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
-  PasswordFormValues,
-  passwordDefaultValues,
-  passwordFormSchema,
+  PasscodeFormValues,
+  passcodeDefaultValues,
+  passcodeFormSchema,
 } from "../_helpers/formSetup";
 
-// TODO rename all this stuff to "passcode" instead of "password"
-export default function PasswordForm({
+export default function PasscodeForm({
   id,
   setPoll,
   setOptionIds,
@@ -31,23 +30,23 @@ export default function PasswordForm({
   setOptionIds: (ids: string[]) => void;
   setValidated: (validated: boolean) => void;
 }) {
-  const passwordForm = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordFormSchema),
-    defaultValues: passwordDefaultValues,
+  const passcodeForm = useForm<PasscodeFormValues>({
+    resolver: zodResolver(passcodeFormSchema),
+    defaultValues: passcodeDefaultValues,
   });
 
-  async function onPasswordSubmit(values: PasswordFormValues) {
+  async function onPasscodeSubmit(values: PasscodeFormValues) {
     try {
-      const { password } = values;
+      const { passcode } = values;
 
-      const isValid = await validatePollPasscode(id, password);
+      const isValid = await validatePollPasscode(id, passcode);
 
       setValidated(isValid);
 
       if (!isValid) {
-        passwordForm.setError("password", {
+        passcodeForm.setError("passcode", {
           type: "manual",
-          message: "Invalid password",
+          message: "Invalid passcode",
         });
       } else {
         const data = await getPollById(id);
@@ -62,19 +61,19 @@ export default function PasswordForm({
 
   return (
     <div className="mt-6">
-      <Form {...passwordForm}>
-        <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
+      <Form {...passcodeForm}>
+        <form onSubmit={passcodeForm.handleSubmit(onPasscodeSubmit)}>
           <FormField
-            control={passwordForm.control}
-            name="password"
+            control={passcodeForm.control}
+            name="passcode"
             render={({ field }) => (
               <FormItem className="mb-8">
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Passcode</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Please enter the password you were given to access this FunkyPoll. If you
+                  Please enter the passcode you were given to access this FunkyPoll. If you
                   don&apos;t have one, contact the creator of this poll.
                 </FormDescription>
                 <FormMessage />

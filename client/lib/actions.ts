@@ -21,7 +21,7 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
     throw new Error("You can only create polls for your own account");
   }
 
-  // encrypt password
+  // encrypt passcode
   const encryptedPasscode = await bcrypt.hash(passcode, 10);
 
   const poll = await prisma.poll.create({
@@ -79,7 +79,7 @@ export async function getUserPolls(userId: string) {
     return {
       poll: {
         ...poll,
-        password: null,
+        passcode: null,
       },
       links: generateLinks(poll.id),
     };

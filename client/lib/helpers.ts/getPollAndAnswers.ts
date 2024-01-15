@@ -26,9 +26,9 @@ const getPollAndOptions = async (pollId: string): Promise<PollAndLinks> => {
     },
   });
 
-  // set password to null so it doesn't get sent to the client
+  // set passcode to empty string so it doesn't get sent to the client
   if (poll) {
-    poll.password = null;
+    poll.passcode = "";
   }
 
   if (!poll) throw new Error("Poll not found");

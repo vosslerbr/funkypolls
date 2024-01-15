@@ -35,9 +35,7 @@ const formSchema = z.object({
     required_error: "Please select an expiration",
   }),
   expirationDate: z.date(),
-  passcode: z.string().min(4, {
-    message: "Password must be at least 4 characters",
-  }),
+  passcode: z.string(),
   requirePasscodeToView: z.boolean().default(false),
   userId: z.string(),
 });
