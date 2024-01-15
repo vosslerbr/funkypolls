@@ -20,19 +20,6 @@ export default function VoteMain({ id }: { id: string }) {
 
   const isExpired = poll && dayjs(poll.expirationDate).isBefore(dayjs());
 
-  // check each second if the poll is expired
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (poll) {
-        const isExpired = dayjs(poll.expirationDate).isBefore(dayjs());
-
-        setNowExpired(isExpired);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [poll]);
-
   useEffect(() => {
     async function fetchPoll() {
       try {
@@ -68,8 +55,6 @@ export default function VoteMain({ id }: { id: string }) {
     setNowExpired(isExpiredOnFetch);
 
     const interval = setInterval(() => {
-      console.log("checking if poll is expired");
-
       if (poll) {
         const isNowExpired = dayjs(poll.expirationDate).isBefore(dayjs());
 
@@ -89,6 +74,7 @@ export default function VoteMain({ id }: { id: string }) {
   }
 
   // requires password and not validated
+  // TODO getting a weird flash now when successfully entering a password
   if (pollFound && !validated) {
     return (
       <PasswordForm
