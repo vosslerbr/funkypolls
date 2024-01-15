@@ -5,12 +5,12 @@ const faqs: {
   {
     question: "What is FunkyPolls?",
     answer:
-      "FunkyPolls can be used for creating polls for use in the classroom, workplace, or anywhere else you need. Each poll can be created with up to 5 answers and can be set to expire whenever you'd like. Results update in real time, so you can see what your voters are deciding as they vote.",
+      "FunkyPolls can be used for creating polls for use in the classroom, workplace, or anywhere else you need. Each poll can be created with up to 5 answers and can be set to expire after 5, 10, or 15 minutes. Results update in real time, so you can see what your voters are deciding as they vote.",
   },
   {
     question: "How much does FunkyPolls cost?",
     answer:
-      "Nothing! FunkyPolls are free to create, vote in, and view. We hope to add paid features in the future, but the core functionality will remain free.",
+      "Nothing! FunkyPolls are free to create, vote in, and view. We hope to add paid features in the future, but the core functionality you see today will remain free.",
   },
   {
     question: "Does FunkyPolls store any personal information?",
@@ -19,7 +19,8 @@ const faqs: {
   },
   {
     question: "I created a FunkyPoll but need to edit or delete it. Can I do that?",
-    answer: "Yes! You can manage all your FunkyPolls from your dashboard.",
+    answer:
+      "Right now, FunkyPolls can't be edited or deleted. We're working on adding this functionality in the future, but for now, make sure you're happy with your poll before you create it!",
   },
 ];
 
