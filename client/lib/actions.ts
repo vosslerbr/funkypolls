@@ -12,7 +12,8 @@ import { generateLinks } from "./utils";
  * Creates a new poll with the given data. Returns the poll's voting and results links
  */
 export const createFunkyPoll = async (data: CreatePollFormValues) => {
-  const { question, options, userId, passcode, expirationDate, expiration } = data;
+  const { question, options, userId, passcode, expirationDate, expiration, requirePasscodeToView } =
+    data;
 
   const { userId: loggedInUserId } = auth();
 
@@ -30,6 +31,7 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
       expiration,
       userId,
       passcode: encryptedPasscode,
+      requirePasscodeToView,
     },
   });
 

@@ -38,6 +38,7 @@ const formSchema = z.object({
   passcode: z.string().min(4, {
     message: "Password must be at least 4 characters",
   }),
+  requirePasscodeToView: z.boolean().default(false),
   userId: z.string(),
 });
 
@@ -64,7 +65,8 @@ const defaultValues: CreatePollFormValues = {
   options: [{ value: "" }, { value: "" }],
   expiration: expirationOptions[0].label,
   expirationDate: new Date(),
-  passcode: "", // TODO maybe auto-gen the code here?
+  requirePasscodeToView: false,
+  passcode: "TESTING", // TODO maybe auto-gen the code here?
   userId: "",
 };
 

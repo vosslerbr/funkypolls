@@ -2,6 +2,7 @@
 
 import LinksDialog from "@/components/alerts/LinksDialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -178,7 +179,29 @@ export default function CreateForm() {
               )}
             />
 
-            {/* // TODO checkbox for requirePasscodeToView */}
+            <FormField
+              control={form.control}
+              name="requirePasscodeToView"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mb-8">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={submitting}
+                    />
+                  </FormControl>
+
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Require passcode to access voting form</FormLabel>
+                    <FormDescription>
+                      Voters will be required to enter this FunkyPoll&apos;s passcode before they
+                      can access the voting form.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
 
             {submitting ? (
               <Button type="submit" disabled={true} className="sm:w-auto w-full">
