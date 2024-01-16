@@ -1,61 +1,45 @@
 "use client";
 
-import { Loading } from "@/components/Loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPollById } from "@/lib/actions";
-import { Links, PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
+import { Links, PollAndLinks, PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { useEffect, useState } from "react";
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { io } from "socket.io-client";
 
-export default function PollResults({ id }: { id: string }) {
-  const [loading, setLoading] = useState(true);
-  const [poll, setPoll] = useState<PollWithOptions | null>(null);
-  const [links, setLinks] = useState<Links | null>(null);
+export default function PollResults({ pollAndLinks }: { pollAndLinks: PollAndLinks }) {
+  const [poll, setPoll] = useState<PollWithOptions>(pollAndLinks.poll);
+  const [links] = useState<Links>(pollAndLinks.links);
 
-  async function fetchPoll() {
+  async function refreshPoll() {
     try {
-      const data = await getPollById(id);
+      const data = await getPollById(poll.id);
 
       setPoll(data.poll);
-      setLinks(data.links);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   }
 
   let timer: NodeJS.Timeout | undefined = undefined;
 
   const initSocket = async () => {
-    const socket = io(`${process.env.NEXT_PUBLIC_WS_SERVER_BASE_URL}/?pollId=${id}`);
+    const socket = io(`${process.env.NEXT_PUBLIC_WS_SERVER_BASE_URL}/?pollId=${poll.id}`);
 
     socket.on("newvote", () => {
       clearTimeout(timer);
 
       timer = setTimeout(() => {
-        fetchPoll();
+        refreshPoll();
       }, 1000);
     });
   };
 
   useEffect(() => {
-    if (id) {
-      initSocket();
+    initSocket();
 
-      fetchPoll();
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (!loading && !poll) {
-    return <h1>This FunkyPoll does not exist</h1>;
-  }
+  }, []);
 
   return (
     <>

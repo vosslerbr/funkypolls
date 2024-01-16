@@ -12,7 +12,7 @@ export default function Error({
 }) {
   return (
     <>
-      <PageTitle title="Vote" />
+      <PageTitle title="Results" />
       <Alert variant="destructive" className="mt-4">
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>
