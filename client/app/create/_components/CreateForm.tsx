@@ -211,12 +211,17 @@ export default function CreateForm() {
             />
 
             {submitting ? (
-              <Button type="submit" disabled={true} className="sm:w-auto w-full">
+              <Button
+                type="submit"
+                disabled={true}
+                className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
               </Button>
             ) : (
-              <Button type="submit" className="sm:w-auto w-full">
+              <Button
+                type="submit"
+                className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
                 Submit
               </Button>
             )}

@@ -15,7 +15,9 @@ export default function Nav() {
     if (pathname === "/dashboard") {
       return (
         <Link href="/create">
-          <Button>Create a FunkyPoll</Button>
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
+            Create a FunkyPoll
+          </Button>
         </Link>
       );
     }
@@ -34,7 +36,9 @@ export default function Nav() {
           <Button variant="ghost">Dashboard</Button>
         </Link>
         <Link href="/create">
-          <Button>Create a FunkyPoll</Button>
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
+            Create a FunkyPoll
+          </Button>
         </Link>
       </>
     );
@@ -44,7 +48,7 @@ export default function Nav() {
     if (!isSignedIn) {
       return (
         <SignInButton>
-          <Button>Sign In</Button>
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">Sign In</Button>
         </SignInButton>
       );
     } else {

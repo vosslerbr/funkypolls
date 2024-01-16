@@ -1,6 +1,7 @@
 import { Loading } from "@/components/Loading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -96,8 +97,6 @@ export default function VoteForm({
 
   return (
     <>
-      <h2 className="text-2xl font-bold mt-6">{poll?.question}</h2>
-
       <Dialog
         open={showThanksDialog}
         onOpenChange={(open) => {
@@ -117,81 +116,93 @@ export default function VoteForm({
         </DialogContent>
       </Dialog>
 
-      {hasVoted ? (
-        <>
-          <Alert className="mt-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>You voted in this FunkyPoll</AlertTitle>
-            <AlertDescription>
-              You can view the results of this FunkyPoll using the button below.
-            </AlertDescription>
-          </Alert>
-          <Link href={`/results/${id}`} className="mt-4">
-            <Button className="sm:w-auto w-full">View Results</Button>
-          </Link>
-        </>
-      ) : (
-        <div className="mt-4">
-          <Form {...voteForm}>
-            <form onSubmit={voteForm.handleSubmit(onVoteSubmit)}>
-              <FormField
-                control={voteForm.control}
-                name="optionId"
-                render={({ field }) => (
-                  <FormItem className="space-y-3 mb-8">
-                    <FormLabel>My vote:</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1">
-                        {poll?.options.map((option) => (
-                          <FormItem
-                            className="flex items-center space-x-3 space-y-0"
-                            key={option.id}>
-                            <FormControl>
-                              <RadioGroupItem value={option.id} />
-                            </FormControl>
-                            <FormLabel className="font-normal">{option.text}</FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={voteForm.control}
-                name="passcode"
-                render={({ field }) => (
-                  <FormItem className="mb-8">
-                    <FormLabel>Passcode</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Please enter the passcode you were given for this FunkyPoll. If you don&apos;t
-                      have one, contact the creator of this poll.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {submitting ? (
-                <Button type="submit" disabled={true} className="sm:w-auto w-full">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving your vote...
-                </Button>
-              ) : (
-                <Button type="submit" className="sm:w-auto w-full">
-                  Submit
-                </Button>
-              )}
-            </form>
-          </Form>
-        </div>
-      )}
+      <Card className="mt-8">
+        <CardHeader>
+          <h2 className="text-2xl font-bold">{poll?.question}</h2>
+        </CardHeader>
+        <CardContent>
+          {hasVoted ? (
+            <>
+              <Alert className="mt-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>You voted in this FunkyPoll</AlertTitle>
+                <AlertDescription>
+                  You can view the results of this FunkyPoll using the button below.
+                </AlertDescription>
+              </Alert>
+              <Link href={`/results/${id}`} className="mt-4">
+                <Button className="sm:w-auto w-full">View Results</Button>
+              </Link>
+            </>
+          ) : (
+            <div className="mt-4">
+              <Form {...voteForm}>
+                <form onSubmit={voteForm.handleSubmit(onVoteSubmit)}>
+                  <FormField
+                    control={voteForm.control}
+                    name="optionId"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3 mb-8">
+                        <FormLabel>My vote:</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex flex-col space-y-1">
+                            {poll?.options.map((option) => (
+                              <FormItem
+                                className="flex items-center space-x-3 space-y-0"
+                                key={option.id}>
+                                <FormControl>
+                                  <RadioGroupItem value={option.id} />
+                                </FormControl>
+                                <FormLabel className="font-normal">{option.text}</FormLabel>
+                              </FormItem>
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={voteForm.control}
+                    name="passcode"
+                    render={({ field }) => (
+                      <FormItem className="mb-8">
+                        <FormLabel>Passcode</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Please enter the passcode you were given for this FunkyPoll. If you
+                          don&apos;t have one, contact the creator of this poll.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {submitting ? (
+                    <Button
+                      type="submit"
+                      disabled={true}
+                      className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving your vote...
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+                      Submit
+                    </Button>
+                  )}
+                </form>
+              </Form>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </>
   );
 }
