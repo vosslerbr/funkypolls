@@ -3,6 +3,7 @@ import MobileNav from "@/components/MobileNav";
 import Nav from "@/components/Nav";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -27,6 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <Footer />
           <Toaster />
+
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>
