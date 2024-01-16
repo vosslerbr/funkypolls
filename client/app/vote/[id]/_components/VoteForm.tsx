@@ -1,3 +1,4 @@
+import { Loading } from "@/components/Loading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,14 +12,16 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/components/ui/use-toast";
-import { getPollById, handleVote } from "@/lib/actions";
+import { handleVote } from "@/lib/actions";
 import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
@@ -31,14 +34,13 @@ import { generateVoteFormSchema } from "../_helpers/formSetup";
 export default function VoteForm({
   id,
   poll,
-  setPoll,
   optionIds,
 }: {
   id: string;
   poll: PollWithOptions;
-  setPoll: (poll: PollWithOptions) => void;
   optionIds: string[];
 }) {
+  const [checkingLocalStorage, setCheckingLocalStorage] = useState(true);
   const [hasVoted, setHasVoted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showThanksDialog, setShowThanksDialog] = useState(false);
@@ -52,36 +54,45 @@ export default function VoteForm({
   async function onVoteSubmit(values: z.infer<typeof voteFormSchema>) {
     try {
       setSubmitting(true);
-      await handleVote(id, values.optionId);
-
-      const data = await getPollById(id);
-
-      setPoll(data.poll);
+      await handleVote({ pollId: id, optionId: values.optionId, passcode: values.passcode });
 
       localStorage.setItem(`fp${id}`, "true");
+      setHasVoted(true);
 
       setShowThanksDialog(true);
     } catch (error) {
       console.error(error);
 
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "There was an error saving your vote. Please try again.",
-      });
+      if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message || "There was an error saving your vote. Please try again.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "There was an error saving your vote. Please try again.",
+        });
+      }
     } finally {
       setSubmitting(false);
     }
   }
 
   useEffect(() => {
-    if (id) {
-      // check if user has voted
-      if (localStorage.getItem(`fp${id}`)) {
-        setHasVoted(true);
-      }
+    // check if user has voted
+    if (localStorage.getItem(`fp${id}`)) {
+      setHasVoted(true);
     }
-  }, [id, poll]);
+
+    setCheckingLocalStorage(false);
+  }, [id]);
+
+  if (checkingLocalStorage) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -146,6 +157,23 @@ export default function VoteForm({
                         ))}
                       </RadioGroup>
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={voteForm.control}
+                name="passcode"
+                render={({ field }) => (
+                  <FormItem className="mb-8">
+                    <FormLabel>Passcode</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Please enter the passcode you were given for this FunkyPoll. If you don&apos;t
+                      have one, contact the creator of this poll.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

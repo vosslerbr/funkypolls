@@ -12,6 +12,10 @@ export const columns: ColumnDef<PollAndLinks>[] = [
     header: "Question",
   },
   {
+    accessorKey: "poll.passcode",
+    header: "Passcode",
+  },
+  {
     accessorKey: "poll.expiration",
     header: "Open For",
   },
@@ -48,6 +52,7 @@ export const columns: ColumnDef<PollAndLinks>[] = [
       );
     },
     header: "",
+    id: "vote_link",
   },
   {
     accessorKey: "poll.id",
@@ -61,5 +66,6 @@ export const columns: ColumnDef<PollAndLinks>[] = [
       );
     },
     header: "",
+    id: "results_link",
   },
 ];

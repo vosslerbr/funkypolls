@@ -2,6 +2,7 @@
 
 import LinksDialog from "@/components/alerts/LinksDialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -39,6 +40,7 @@ import {
 export default function CreateForm() {
   const [showLinksDialog, setShowLinksDialog] = useState(false);
   const [links, setLinks] = useState<Links | null>(null);
+  const [passcode, setPasscode] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const { toast } = useToast();
@@ -74,12 +76,13 @@ export default function CreateForm() {
           dayjs().add(1, "day").toDate(),
       };
 
-      const links = await createFunkyPoll(sanitizedValues);
+      const { links, passcode } = await createFunkyPoll(sanitizedValues);
 
       form.reset();
 
       // show modal
       setLinks(links);
+      setPasscode(passcode);
       setShowLinksDialog(true);
     } catch (error) {
       console.error(error);
@@ -96,7 +99,12 @@ export default function CreateForm() {
 
   return (
     <>
-      <LinksDialog links={links} open={showLinksDialog} setShowLinksDialog={setShowLinksDialog} />
+      <LinksDialog
+        links={links}
+        passcode={passcode}
+        open={showLinksDialog}
+        setShowLinksDialog={setShowLinksDialog}
+      />
 
       <div className="mt-4">
         <Form {...form}>
@@ -180,23 +188,24 @@ export default function CreateForm() {
 
             <FormField
               control={form.control}
-              name="password"
+              name="requirePasscodeToView"
               render={({ field }) => (
-                <FormItem className="mb-8">
-                  <FormLabel>Password</FormLabel>
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mb-8">
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Password"
-                      {...field}
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
                       disabled={submitting}
                     />
                   </FormControl>
-                  <FormDescription>
-                    This is optional. If given a password, voters will have to enter it before they
-                    can vote. Leave blank if you want your poll to be public.
-                  </FormDescription>
-                  <FormMessage />
+
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Require passcode to access voting form</FormLabel>
+                    <FormDescription>
+                      Voters will be required to enter this FunkyPoll&apos;s passcode before they
+                      can access the voting form.
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

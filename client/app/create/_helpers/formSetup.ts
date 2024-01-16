@@ -35,12 +35,8 @@ const formSchema = z.object({
     required_error: "Please select an expiration",
   }),
   expirationDate: z.date(),
-  password: z
-    .string()
-    .min(4, {
-      message: "Password must be at least 4 characters",
-    })
-    .optional(),
+  passcode: z.string(),
+  requirePasscodeToView: z.boolean().default(false),
   userId: z.string(),
 });
 
@@ -67,7 +63,8 @@ const defaultValues: CreatePollFormValues = {
   options: [{ value: "" }, { value: "" }],
   expiration: expirationOptions[0].label,
   expirationDate: new Date(),
-  password: undefined,
+  requirePasscodeToView: false,
+  passcode: "",
   userId: "",
 };
 

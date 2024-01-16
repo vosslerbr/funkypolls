@@ -31,7 +31,6 @@ export default function PollResults({ id }: { id: string }) {
   const initSocket = async () => {
     const socket = io(`${process.env.NEXT_PUBLIC_WS_SERVER_BASE_URL}/?pollId=${id}`);
 
-    // TODO add debounce to only refresh after a small delay
     socket.on("newvote", () => {
       clearTimeout(timer);
 

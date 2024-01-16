@@ -12,3 +12,12 @@ export function generateLinks(pollId: string): Links {
     voteUrl: `${process.env.BASE_URL}/vote/${pollId}`,
   };
 }
+
+export function generateRandomString(length: number): string {
+  const possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
+  }
+  return result;
+}
