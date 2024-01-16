@@ -3,17 +3,15 @@
 import { CreatePollFormValues } from "@/app/create/_helpers/formSetup";
 import { auth } from "@clerk/nextjs";
 import axios from "axios";
-import bcrypt from "bcrypt";
-import getPollAndOptions from "./helpers.ts/getPollAndAnswers";
+import getPollAndOptions, { PollAndLinks } from "./helpers.ts/getPollAndAnswers";
 import prisma from "./prisma";
-import { generateLinks } from "./utils";
+import { generateLinks, generateRandomString } from "./utils";
 
 /**
  * Creates a new poll with the given data. Returns the poll's voting and results links
  */
 export const createFunkyPoll = async (data: CreatePollFormValues) => {
-  const { question, options, userId, passcode, expirationDate, expiration, requirePasscodeToView } =
-    data;
+  const { question, options, userId, expirationDate, expiration, requirePasscodeToView } = data;
 
   const { userId: loggedInUserId } = auth();
 
@@ -21,8 +19,9 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
     throw new Error("You can only create polls for your own account");
   }
 
-  // encrypt passcode
-  const encryptedPasscode = await bcrypt.hash(passcode, 10);
+  const passcode = generateRandomString(8);
+
+  // TODO check for any active polls with the same passcode
 
   const poll = await prisma.poll.create({
     data: {
@@ -30,7 +29,7 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
       expirationDate: expirationDate.toISOString(),
       expiration,
       userId,
-      passcode: encryptedPasscode,
+      passcode,
       requirePasscodeToView,
     },
   });
@@ -50,13 +49,13 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
 
   const pollData = await getPollAndOptions(poll.id);
 
-  return pollData.links;
+  return { links: pollData.links, passcode };
 };
 
 /**
  * Returns all polls for a given user
  */
-export async function getUserPolls(userId: string) {
+export async function getUserPolls(userId: string): Promise<PollAndLinks[]> {
   const { userId: loggedInUserId } = auth();
 
   if (!userId || userId !== loggedInUserId) {
@@ -77,10 +76,7 @@ export async function getUserPolls(userId: string) {
 
   const pollsWithLinks = polls.map((poll) => {
     return {
-      poll: {
-        ...poll,
-        passcode: null,
-      },
+      poll,
       links: generateLinks(poll.id),
     };
   });
@@ -102,7 +98,7 @@ export async function validatePollPasscode(id: string, passcode: string) {
     return false;
   }
 
-  const isPasscodeValid = await bcrypt.compare(passcode, poll.passcode);
+  const isPasscodeValid = passcode === poll.passcode;
 
   return isPasscodeValid;
 }
@@ -134,9 +130,14 @@ export async function checkForPollPasscode(id: string) {
  * Returns the poll with the given id
  */
 export async function getPollById(id: string) {
-  const poll = await getPollAndOptions(id);
+  try {
+    const poll = await getPollAndOptions(id);
 
-  return poll;
+    return poll;
+  } catch (error) {
+    console.error(error);
+    throw new Error("This FunkyPoll doesn't seem to exist. Please try again.");
+  }
 }
 
 /**
@@ -151,7 +152,11 @@ export async function handleVote({
   optionId: string;
   passcode: string;
 }) {
-  // TODO validate with poll passcode
+  const isPasscodeValid = await validatePollPasscode(pollId, passcode);
+
+  if (!isPasscodeValid) {
+    throw new Error("Invalid passcode");
+  }
 
   // increment the voteCount for the answer by 1
   await prisma.option.update({

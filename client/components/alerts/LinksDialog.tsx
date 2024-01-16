@@ -13,15 +13,18 @@ import {
 
 export default function LinksDialog({
   links,
+  passcode,
   open,
   setShowLinksDialog,
 }: {
   links: Links | null;
+  passcode: string;
   open: boolean;
   setShowLinksDialog: (open: boolean) => void;
 }) {
   if (!links) return null;
 
+  // TODO styling
   return (
     <Dialog
       open={open}
@@ -33,6 +36,9 @@ export default function LinksDialog({
           <DialogTitle>Success!</DialogTitle>
           <DialogDescription>Your FunkyPoll is ready</DialogDescription>
         </DialogHeader>
+        <p>
+          FunkyPoll passcode is: <strong>{passcode}</strong>
+        </p>
         <p>
           You can use these links to view the results, or head to your dashboard to manage your new
           FunkyPoll.

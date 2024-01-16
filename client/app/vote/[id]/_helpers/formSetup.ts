@@ -19,6 +19,7 @@ const generateVoteFormSchema = (optionIds: string[]) => {
     optionId: z.enum(optionIds as [string, ...string[]], {
       required_error: "Please select an option",
     }),
+    passcode: z.string(),
   });
 };
 

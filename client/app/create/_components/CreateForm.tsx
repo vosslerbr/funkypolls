@@ -40,6 +40,7 @@ import {
 export default function CreateForm() {
   const [showLinksDialog, setShowLinksDialog] = useState(false);
   const [links, setLinks] = useState<Links | null>(null);
+  const [passcode, setPasscode] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const { toast } = useToast();
@@ -75,12 +76,13 @@ export default function CreateForm() {
           dayjs().add(1, "day").toDate(),
       };
 
-      const links = await createFunkyPoll(sanitizedValues);
+      const { links, passcode } = await createFunkyPoll(sanitizedValues);
 
       form.reset();
 
       // show modal
       setLinks(links);
+      setPasscode(passcode);
       setShowLinksDialog(true);
     } catch (error) {
       console.error(error);
@@ -97,7 +99,12 @@ export default function CreateForm() {
 
   return (
     <>
-      <LinksDialog links={links} open={showLinksDialog} setShowLinksDialog={setShowLinksDialog} />
+      <LinksDialog
+        links={links}
+        passcode={passcode}
+        open={showLinksDialog}
+        setShowLinksDialog={setShowLinksDialog}
+      />
 
       <div className="mt-4">
         <Form {...form}>

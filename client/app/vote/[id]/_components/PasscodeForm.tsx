@@ -9,8 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { getPollById, validatePollPasscode } from "@/lib/actions";
-import { PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
+import { validatePollPasscode } from "@/lib/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -21,13 +20,10 @@ import {
 
 export default function PasscodeForm({
   id,
-  setPoll,
-  setOptionIds,
   setValidated,
 }: {
   id: string;
-  setPoll: (poll: PollWithOptions) => void;
-  setOptionIds: (ids: string[]) => void;
+
   setValidated: (validated: boolean) => void;
 }) {
   const passcodeForm = useForm<PasscodeFormValues>({
@@ -48,11 +44,6 @@ export default function PasscodeForm({
           type: "manual",
           message: "Invalid passcode",
         });
-      } else {
-        const data = await getPollById(id);
-
-        setPoll(data.poll);
-        setOptionIds(data.poll.options.map((option) => option.id));
       }
     } catch (error) {
       console.error(error);

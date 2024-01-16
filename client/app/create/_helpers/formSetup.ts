@@ -64,7 +64,7 @@ const defaultValues: CreatePollFormValues = {
   expiration: expirationOptions[0].label,
   expirationDate: new Date(),
   requirePasscodeToView: false,
-  passcode: "TESTING", // TODO maybe auto-gen the code here?
+  passcode: "",
   userId: "",
 };
 
