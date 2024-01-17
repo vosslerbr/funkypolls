@@ -48,7 +48,7 @@ export default function LinksDialog({
           <Button variant="secondary">
             <Link href={"/dashboard"}>Dashboard</Link>
           </Button>
-          <Button>
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
             <Link href={links.resultsUrl}>Results</Link>
           </Button>
         </DialogFooter>

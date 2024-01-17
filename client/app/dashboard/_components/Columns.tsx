@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PollAndLinks, PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
+import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 
 export const columns: ColumnDef<PollAndLinks>[] = [
@@ -46,8 +47,11 @@ export const columns: ColumnDef<PollAndLinks>[] = [
       const poll: PollWithOptions = row.getValue("poll");
 
       return (
-        <Link href={`/vote/${poll.id}`}>
-          <Button>Vote</Button>
+        <Link href={`/vote/${poll.id}`} target="_blank">
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
+            Vote
+            <ExternalLinkIcon className="ml-2 h-4 w-4" />
+          </Button>
         </Link>
       );
     },
@@ -60,8 +64,11 @@ export const columns: ColumnDef<PollAndLinks>[] = [
       const poll: PollWithOptions = row.getValue("poll");
 
       return (
-        <Link href={`/results/${poll.id}`}>
-          <Button>Results</Button>
+        <Link href={`/results/${poll.id}`} target="_blank">
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
+            Results
+            <ExternalLinkIcon className="ml-2 h-4 w-4" />
+          </Button>
         </Link>
       );
     },

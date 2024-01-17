@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-4 my-4">
+      <div className="grid grid-cols-12 gap-4 my-8">
         <Card className="md:col-span-6 col-span-12">
           <CardHeader>
             <CardTitle>Total FunkyPolls</CardTitle>

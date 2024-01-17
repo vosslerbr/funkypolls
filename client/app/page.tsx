@@ -11,7 +11,9 @@ export default function HomePage() {
           Create your poll, cast your vote, explore results
         </h2>
         <Link href="/create">
-          <Button>Create a FunkyPoll</Button>
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500 text-lg py-6 px-8">
+            Create a FunkyPoll
+          </Button>
         </Link>
       </section>
 
