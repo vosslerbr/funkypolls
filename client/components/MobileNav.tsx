@@ -19,7 +19,9 @@ export default function MobileNav() {
     if (pathname === "/dashboard") {
       return (
         <Link href="/create" className="w-full">
-          <Button className="w-full" onClick={() => setSidebarOpen(false)}>
+          <Button
+            className="w-full bg-gradient-to-r from-violet-700 to-purple-500"
+            onClick={() => setSidebarOpen(false)}>
             Create a FunkyPoll
           </Button>
         </Link>
@@ -45,7 +47,9 @@ export default function MobileNav() {
         </Link>
 
         <Link href="/create" className="w-full">
-          <Button className="w-full" onClick={() => setSidebarOpen(false)}>
+          <Button
+            className="w-full bg-gradient-to-r from-violet-700 to-purple-500"
+            onClick={() => setSidebarOpen(false)}>
             Create a FunkyPoll
           </Button>
         </Link>
@@ -57,7 +61,11 @@ export default function MobileNav() {
     if (!isSignedIn) {
       return (
         <SignInButton>
-          <Button onClick={() => setSidebarOpen(false)}>Sign In</Button>
+          <Button
+            onClick={() => setSidebarOpen(false)}
+            className="bg-gradient-to-r from-violet-700 to-purple-500">
+            Sign In
+          </Button>
         </SignInButton>
       );
     } else {
