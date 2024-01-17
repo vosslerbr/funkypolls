@@ -1,7 +1,7 @@
 import { Loading } from "@/components/Loading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -109,32 +109,41 @@ export default function VoteForm({
           </DialogHeader>
           <p>You can view the results of this FunkyPoll using the button below.</p>
           <DialogFooter>
-            <Button>
+            <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
               <Link href={`/results/${id}`}>View Results</Link>
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Card className="mt-8">
-        <CardHeader>
-          <h2 className="text-2xl font-bold">{poll?.question}</h2>
-        </CardHeader>
-        <CardContent>
-          {hasVoted ? (
-            <>
-              <Alert className="mt-4">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>You voted in this FunkyPoll</AlertTitle>
-                <AlertDescription>
-                  You can view the results of this FunkyPoll using the button below.
-                </AlertDescription>
-              </Alert>
-              <Link href={`/results/${id}`} className="mt-4">
-                <Button className="sm:w-auto w-full">View Results</Button>
-              </Link>
-            </>
-          ) : (
+      {hasVoted ? (
+        <Card className="mt-8">
+          <CardHeader>
+            <h2 className="text-2xl font-bold">{poll?.question}</h2>
+          </CardHeader>
+          <CardContent>
+            <Alert className="mt-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>You voted in this FunkyPoll</AlertTitle>
+              <AlertDescription>
+                You can view the results of this FunkyPoll using the button below.
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+          <CardFooter>
+            <Link href={`/results/${id}`} className="mt-4">
+              <Button className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+                View Results
+              </Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      ) : (
+        <Card className="mt-8">
+          <CardHeader>
+            <h2 className="text-2xl font-bold">{poll?.question}</h2>
+          </CardHeader>
+          <CardContent>
             <div className="mt-4">
               <Form {...voteForm}>
                 <form onSubmit={voteForm.handleSubmit(onVoteSubmit)}>
@@ -200,9 +209,9 @@ export default function VoteForm({
                 </form>
               </Form>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }

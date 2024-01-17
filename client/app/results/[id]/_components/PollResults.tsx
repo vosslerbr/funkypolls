@@ -42,50 +42,60 @@ export default function PollResults({ pollAndLinks }: { pollAndLinks: PollAndLin
   }, []);
 
   return (
-    <>
-      <h2 className="text-2xl font-bold mt-6">{poll?.question}</h2>
+    <Card className="mt-8">
+      <CardHeader>
+        <h2 className="text-2xl font-bold">{poll?.question}</h2>
+      </CardHeader>
+      <CardContent>
+        <div className="grid lg:grid-cols-12 md:grid-cols-8 grid-cols-4 gap-4 my-4">
+          {poll?.options.map(({ text, votes }, index) => (
+            <Card className="col-span-4" key={`option${index}`}>
+              <CardHeader>
+                <CardTitle>{text}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>{votes} votes</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      <div className="grid lg:grid-cols-12 md:grid-cols-8 grid-cols-4 gap-4 my-4">
-        {poll?.options.map(({ text, votes }, index) => (
-          <Card className="col-span-4" key={`option${index}`}>
+        <ResponsiveContainer height={450} className="mt-16">
+          <BarChart data={poll.options} maxBarSize={122}>
+            <XAxis dataKey="text" tick={{ fill: "rgb(3, 7, 17)" }} stroke="rgb(3, 7, 17)" />
+            <YAxis tick={{ fill: "rgb(3, 7, 17)" }} stroke="rgb(3, 7, 17)" />
+            <defs>
+              <linearGradient id="colorUv" x1="0" y1="0" x2="100%" y2="0" spreadMethod="reflect">
+                <stop offset="0" stopColor="#6d28d9" stopOpacity={1} />
+                <stop offset="100%" stopColor="#a855f7" stopOpacity={1} />
+              </linearGradient>
+            </defs>
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="votes" fill="url(#colorUv)" radius={[8, 8, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+
+        {/* // TODO this is ugly, make a better component for copying URLs */}
+        <div className="grid lg:grid-cols-12  grid-cols-6 gap-4 mt-16">
+          <Card className="col-span-6">
             <CardHeader>
-              <CardTitle>{text}</CardTitle>
+              <CardTitle>Vote URL</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>{votes} votes</p>
+              <p>{links?.voteUrl || ""}</p>
             </CardContent>
           </Card>
-        ))}
-      </div>
-
-      <ResponsiveContainer height={450} className="mt-16">
-        <BarChart data={poll?.options}>
-          <XAxis dataKey="text" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="votes" fill="hsl(var(--foreground))" />
-        </BarChart>
-      </ResponsiveContainer>
-
-      <div className="grid lg:grid-cols-12  grid-cols-6 gap-4 mt-16">
-        <Card className="col-span-6">
-          <CardHeader>
-            <CardTitle>Vote URL</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>{links?.voteUrl || ""}</p>
-          </CardContent>
-        </Card>
-        <Card className="col-span-6">
-          <CardHeader>
-            <CardTitle>Results URL</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>{links?.resultsUrl || ""}</p>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+          <Card className="col-span-6">
+            <CardHeader>
+              <CardTitle>Results URL</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{links?.resultsUrl || ""}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
