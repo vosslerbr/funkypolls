@@ -23,9 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Nav />
           <MobileNav />
 
-          <main className="flex min-h-screen flex-col md:px-8 px-4 py-24 max-w-screen-xl m-auto">
-            {children}
-          </main>
+          <main className="flex min-h-screen flex-col md:px-8 px-4 py-24 max-w-screen-xl m-auto">{children}</main>
           <Footer />
           <Toaster />
 

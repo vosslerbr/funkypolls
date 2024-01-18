@@ -2,10 +2,12 @@
 
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 
+// TODO refactor this, lots of duplicate code
 export default function Nav() {
   const { isSignedIn, user, isLoaded } = useUser();
 
@@ -15,9 +17,7 @@ export default function Nav() {
     if (pathname === "/dashboard") {
       return (
         <Link href="/create">
-          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
-            Create a FunkyPoll
-          </Button>
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">Create a FunkyPoll</Button>
         </Link>
       );
     }
@@ -36,9 +36,7 @@ export default function Nav() {
           <Button variant="ghost">Dashboard</Button>
         </Link>
         <Link href="/create">
-          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
-            Create a FunkyPoll
-          </Button>
+          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">Create a FunkyPoll</Button>
         </Link>
       </>
     );
@@ -65,14 +63,10 @@ export default function Nav() {
     <nav className="sm:block hidden sticky top-0 bg-inherit shadow z-50">
       <div className="flex flex-row justify-between items-center md:px-8 px-4 py-4 max-w-screen-xl m-auto">
         <Link href="/">
-          <h1 className="text-2xl font-bold">FunkyPolls</h1>
+          <Image src="/logo.png" width={40} height={40} alt="FunkyPolls logo" />
         </Link>
 
-        {!isLoaded ? (
-          <Loader2 className="w-10 h-10 text-gray-500 animate-spin" />
-        ) : (
-          renderUserButton()
-        )}
+        {!isLoaded ? <Loader2 className="w-10 h-10 text-gray-500 animate-spin" /> : renderUserButton()}
       </div>
     </nav>
   );

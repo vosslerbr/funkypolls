@@ -2,12 +2,14 @@
 
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { Loader2, Menu } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent } from "./ui/sheet";
 
+// TODO refactor this, lots of duplicate code
 export default function MobileNav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -61,17 +63,13 @@ export default function MobileNav() {
     if (!isSignedIn) {
       return (
         <SignInButton>
-          <Button
-            onClick={() => setSidebarOpen(false)}
-            className="bg-gradient-to-r from-violet-700 to-purple-500">
+          <Button onClick={() => setSidebarOpen(false)} className="bg-gradient-to-r from-violet-700 to-purple-500">
             Sign In
           </Button>
         </SignInButton>
       );
     } else {
-      return (
-        <div className={`flex flex-col items-center gap-4 py-8`}>{renderDynamicLink(isMobile)}</div>
-      );
+      return <div className={`flex flex-col items-center gap-4 py-8`}>{renderDynamicLink(isMobile)}</div>;
     }
   }
 
@@ -79,7 +77,7 @@ export default function MobileNav() {
     <nav className="sm:hidden block sticky top-0 bg-inherit shadow z-50">
       <div className="flex flex-row justify-between items-center md:px-8 px-4 py-4 max-w-screen-xl m-auto">
         <Link href="/">
-          <h1 className="text-2xl font-bold">FunkyPolls</h1>
+          <Image src="/logo.png" width={40} height={40} alt="FunkyPolls logo" />
         </Link>
 
         {isSignedIn ? (
@@ -89,17 +87,13 @@ export default function MobileNav() {
           </div>
         ) : (
           <SignInButton>
-            <Button>Sign In</Button>
+            <Button className="bg-gradient-to-r from-violet-700 to-purple-500">Sign In</Button>
           </SignInButton>
         )}
 
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
           <SheetContent>
-            {!isLoaded ? (
-              <Loader2 className="w-10 h-10 text-gray-500 animate-spin" />
-            ) : (
-              renderUserButton(true)
-            )}
+            {!isLoaded ? <Loader2 className="w-10 h-10 text-gray-500 animate-spin" /> : renderUserButton(true)}
           </SheetContent>
         </Sheet>
       </div>
