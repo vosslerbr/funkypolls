@@ -7,7 +7,7 @@ export default function FAQCards() {
       {faqs.map(({ question, answer }, index) => (
         <Card className="mb-8" key={`faq${index}`}>
           <CardHeader>
-            <CardTitle>{question}</CardTitle>
+            <CardTitle className="leading-7">{question}</CardTitle>
           </CardHeader>
           <CardContent>
             <p>{answer}</p>

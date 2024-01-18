@@ -1,8 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPollById } from "@/lib/actions";
 import { Links, PollAndLinks, PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
+import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { io } from "socket.io-client";
@@ -10,6 +12,8 @@ import { io } from "socket.io-client";
 export default function PollResults({ pollAndLinks }: { pollAndLinks: PollAndLinks }) {
   const [poll, setPoll] = useState<PollWithOptions>(pollAndLinks.poll);
   const [links] = useState<Links>(pollAndLinks.links);
+  const [copiedVote, setCopiedVote] = useState(false);
+  const [copiedResults, setCopiedResults] = useState(false);
 
   async function refreshPoll() {
     try {
@@ -41,6 +45,25 @@ export default function PollResults({ pollAndLinks }: { pollAndLinks: PollAndLin
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // whenever copied is set to true, set it back to false after a delay
+  useEffect(() => {
+    if (copiedVote) {
+      const timeout = setTimeout(() => {
+        setCopiedVote(false);
+      }, 1500);
+
+      return () => clearTimeout(timeout);
+    }
+
+    if (copiedResults) {
+      const timeout = setTimeout(() => {
+        setCopiedResults(false);
+      }, 1500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [copiedVote, copiedResults]);
+
   return (
     <Card className="mt-8">
       <CardHeader>
@@ -60,7 +83,7 @@ export default function PollResults({ pollAndLinks }: { pollAndLinks: PollAndLin
           ))}
         </div>
 
-        <ResponsiveContainer height={450} className="mt-16">
+        <ResponsiveContainer height={400} className="mt-16">
           <BarChart data={poll.options} maxBarSize={122}>
             <XAxis dataKey="text" tick={{ fill: "rgb(3, 7, 17)" }} stroke="rgb(3, 7, 17)" />
             <YAxis tick={{ fill: "rgb(3, 7, 17)" }} stroke="rgb(3, 7, 17)" />
@@ -75,27 +98,55 @@ export default function PollResults({ pollAndLinks }: { pollAndLinks: PollAndLin
             <Bar dataKey="votes" fill="url(#colorUv)" radius={[8, 8, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-
-        {/* // TODO this is ugly, make a better component for copying URLs */}
-        <div className="grid lg:grid-cols-12  grid-cols-6 gap-4 mt-16">
-          <Card className="col-span-6">
-            <CardHeader>
-              <CardTitle>Vote URL</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{links?.voteUrl || ""}</p>
-            </CardContent>
-          </Card>
-          <Card className="col-span-6">
-            <CardHeader>
-              <CardTitle>Results URL</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{links?.resultsUrl || ""}</p>
-            </CardContent>
-          </Card>
-        </div>
       </CardContent>
+      <CardFooter>
+        {/* // TODO this is ugly, make a better component for copying URLs */}
+        <div className="grid lg:grid-cols-12  grid-cols-6 gap-4 mt-16 w-full">
+          <div className="col-span-6">
+            <Button
+              className="w-full"
+              variant="secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(links.voteUrl);
+
+                setCopiedVote(true);
+              }}>
+              {copiedVote ? (
+                <>
+                  Copied!
+                  <Check className="ml-2 h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Copy voting link
+                  <Copy className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
+          <div className="col-span-6">
+            <Button
+              className="w-full"
+              variant="secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(links.resultsUrl);
+                setCopiedResults(true);
+              }}>
+              {copiedResults ? (
+                <>
+                  Copied!
+                  <Check className="ml-2 h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Copy results link
+                  <Copy className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   );
 }

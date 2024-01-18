@@ -3,23 +3,9 @@
 import LinksDialog from "@/components/alerts/LinksDialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Links } from "@/lib/helpers.ts/getPollAndAnswers";
 import { cn } from "@/lib/utils";
@@ -30,12 +16,7 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { createFunkyPoll } from "../../../lib/actions";
-import {
-  CreatePollFormValues,
-  defaultValues,
-  expirationOptions,
-  formSchema,
-} from "../_helpers/formSetup";
+import { CreatePollFormValues, defaultValues, expirationOptions, formSchema } from "../_helpers/formSetup";
 
 export default function CreateForm() {
   const [showLinksDialog, setShowLinksDialog] = useState(false);
@@ -99,12 +80,7 @@ export default function CreateForm() {
 
   return (
     <>
-      <LinksDialog
-        links={links}
-        passcode={passcode}
-        open={showLinksDialog}
-        setShowLinksDialog={setShowLinksDialog}
-      />
+      <LinksDialog links={links} passcode={passcode} open={showLinksDialog} setShowLinksDialog={setShowLinksDialog} />
 
       <div className="mt-4">
         <Form {...form}>
@@ -138,8 +114,7 @@ export default function CreateForm() {
                         <Input {...field} disabled={submitting} />
                       </FormControl>
                       <FormDescription className={cn(index !== fields.length - 1 && "sr-only")}>
-                        These are the options that you want people to choose from. You can provide 2
-                        to 5 options.
+                        These are the options that you want people to choose from. You can provide 2 to 5 options.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -163,10 +138,7 @@ export default function CreateForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-col mb-8">
                   <FormLabel>Expiration</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={submitting}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} disabled={submitting}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Accept votes for..." />
@@ -192,18 +164,14 @@ export default function CreateForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mb-8">
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={submitting}
-                    />
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={submitting} />
                   </FormControl>
 
                   <div className="space-y-1 leading-none">
                     <FormLabel>Require passcode to access voting form</FormLabel>
                     <FormDescription>
-                      Voters will be required to enter this FunkyPoll&apos;s passcode before they
-                      can access the voting form.
+                      Voters will be required to enter this FunkyPoll&apos;s passcode before they can access the voting
+                      form.
                     </FormDescription>
                   </div>
                 </FormItem>
@@ -219,9 +187,7 @@ export default function CreateForm() {
                 Saving...
               </Button>
             ) : (
-              <Button
-                type="submit"
-                className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+              <Button type="submit" className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
                 Submit
               </Button>
             )}
