@@ -27,6 +27,36 @@ export const columns: ColumnDef<PollWithLinks>[] = [
     accessorKey: "poll.status",
     header: "Status",
     accessorFn: (row) => statusMap.dbToClient[row.poll.status],
+    cell: ({ row }) => {
+      const poll: PollWithoutLinks = row.getValue("poll");
+
+      const isClosed = statusMap.dbToClient[poll.status] === "Closed";
+      const isExpired = statusMap.dbToClient[poll.status] === "Open" && dayjs(poll.expirationDate).isBefore(dayjs());
+      const isOpen = statusMap.dbToClient[poll.status] === "Open";
+
+      switch (true) {
+        case isClosed:
+          return (
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-600">
+              {poll.status}
+            </span>
+          );
+        case isExpired:
+          return (
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-600">
+              EXPIRED
+            </span>
+          );
+        case isOpen:
+          return (
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-600">
+              {poll.status}
+            </span>
+          );
+        default:
+          return <span>-</span>;
+      }
+    },
   },
   {
     accessorKey: "expirationDate",
