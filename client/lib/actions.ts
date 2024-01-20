@@ -1,61 +1,63 @@
 "use server";
 
-import { CreatePollFormValues } from "@/app/create/_helpers/formSetup";
 import { auth } from "@clerk/nextjs";
 import axios from "axios";
-import getPollAndOptions, { PollAndLinks } from "./helpers.ts/getPollAndAnswers";
 import prisma from "./prisma";
-import { generateLinks, generateRandomString } from "./utils";
+import { PollWithLinks } from "./types";
+import { generateLinks } from "./utils";
 
 /**
  * Creates a new poll with the given data. Returns the poll's voting and results links
  */
-export const createFunkyPoll = async (data: CreatePollFormValues) => {
-  const { question, options, userId, expirationDate, expiration, requirePasscodeToView } = data;
+export const createFunkyPoll = async (data: any) => {
+  // TODO type this
+  console.log("createFunkyPoll", data);
 
-  const { userId: loggedInUserId } = auth();
+  // const { question, options, userId, expirationDate, expiration, requirePasscodeToView } = data;
 
-  if (!userId || userId !== loggedInUserId) {
-    throw new Error("You can only create polls for your own account");
-  }
+  // const { userId: loggedInUserId } = auth();
 
-  const passcode = generateRandomString(8);
+  // if (!userId || userId !== loggedInUserId) {
+  //   throw new Error("You can only create polls for your own account");
+  // }
 
-  // TODO check for any active polls with the same passcode
+  // const passcode = generateRandomString(8);
 
-  const poll = await prisma.poll.create({
-    data: {
-      question,
-      expirationDate: expirationDate.toISOString(),
-      expiration,
-      userId,
-      passcode,
-      requirePasscodeToView,
-    },
-  });
+  // // TODO check for any active polls with the same passcode
 
-  for (const option of options) {
-    await prisma.option.create({
-      data: {
-        text: option.value,
-        poll: {
-          connect: {
-            id: poll.id,
-          },
-        },
-      },
-    });
-  }
+  // const poll = await prisma.poll.create({
+  //   data: {
+  //     question,
+  //     expirationDate: expirationDate.toISOString(),
+  //     expiration,
+  //     userId,
+  //     passcode,
+  //     requirePasscodeToView,
+  //   },
+  // });
 
-  const pollData = await getPollAndOptions(poll.id);
+  // for (const option of options) {
+  //   await prisma.option.create({
+  //     data: {
+  //       text: option.value,
+  //       poll: {
+  //         connect: {
+  //           id: poll.id,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 
-  return { links: pollData.links, passcode };
+  // const pollData = await getPollAndOptions(poll.id);
+
+  // return { links: pollData.links, passcode };
 };
 
 /**
  * Returns all polls for a given user
  */
-export async function getUserPolls(userId: string): Promise<PollAndLinks[]> {
+export async function getUserPolls(userId: string): Promise<PollWithLinks[]> {
   const { userId: loggedInUserId } = auth();
 
   if (!userId || userId !== loggedInUserId) {
@@ -70,7 +72,11 @@ export async function getUserPolls(userId: string): Promise<PollAndLinks[]> {
       createdAt: "desc",
     },
     include: {
-      options: true,
+      questions: {
+        include: {
+          options: true,
+        },
+      },
     },
   });
 
@@ -129,11 +135,26 @@ export async function checkForPollPasscode(id: string) {
 /**
  * Returns the poll with the given id
  */
-export async function getPollById(id: string) {
+export async function getPollById(id: string): Promise<PollWithLinks> {
   try {
-    const poll = await getPollAndOptions(id);
+    const poll = await prisma.poll.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        questions: {
+          include: {
+            options: true,
+          },
+        },
+      },
+    });
 
-    return poll;
+    if (!poll) {
+      throw new Error("Poll not found");
+    }
+
+    return { poll, links: generateLinks(poll.id) };
   } catch (error) {
     console.error(error);
     throw new Error("This FunkyPoll doesn't seem to exist. Please try again.");

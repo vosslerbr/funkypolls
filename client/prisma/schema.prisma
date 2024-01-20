@@ -11,27 +11,53 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Status {
+  OPEN
+  CLOSED
+}
+
+enum Expiration {
+  FIVE_MINUTES
+  TEN_MINUTES
+  FIFTEEN_MINUTES
+}
+
 model Poll {
   id        String      @id @default(cuid())
-  question     String
-  expiration String @default("n/a")
-  expirationDate DateTime @default(now())
-  options   Option[]
+  name     String
+  expiration Expiration @default(FIVE_MINUTES)
+  expirationDate DateTime @default(now()) // updated when poll gets opened
+  questions   Question[]
   passcode  String
   requirePasscodeToView Boolean @default(false)
-  userId    String
+  userId    String // poll creator's Clerk ID
+  status Status @default(CLOSED)
+  archived Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Question {
+  id        String      @id @default(cuid())
+  question     String
+  poll      Poll        @relation(fields: [pollId], references: [id])
+  pollId    String
+  options   Option[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pollId], name: "pollId")
 }
 
 model Option {
   id        String      @id @default(cuid())
   text      String
   votes     Int        @default(0)
-  poll      Poll     @relation(fields: [pollId], references: [id])
-  pollId    String
+  question      Question     @relation(fields: [questionId], references: [id])
+  questionId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([pollId], name: "pollId")
+  @@index([questionId], name: "questionId")
+  @@unique([questionId, text], name: "questionId_text_unique")
 }

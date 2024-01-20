@@ -1,16 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PollAndLinks, PollWithOptions } from "@/lib/helpers.ts/getPollAndAnswers";
+import expirationMap from "@/lib/maps/expirationMap";
+import statusMap from "@/lib/maps/statusMap";
+import { PollWithLinks, PollWithoutLinks } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<PollAndLinks>[] = [
+export const columns: ColumnDef<PollWithLinks>[] = [
   {
-    accessorKey: "poll.question",
-    header: "Question",
+    accessorKey: "poll.name",
+    header: "Name",
   },
   {
     accessorKey: "poll.passcode",
@@ -19,32 +21,37 @@ export const columns: ColumnDef<PollAndLinks>[] = [
   {
     accessorKey: "poll.expiration",
     header: "Open For",
+    accessorFn: (row) => expirationMap.dbToClient[row.poll.expiration],
+  },
+  {
+    accessorKey: "poll.status",
+    header: "Status",
+    accessorFn: (row) => statusMap.dbToClient[row.poll.status],
   },
   {
     accessorKey: "expirationDate",
-    accessorFn: (row) => dayjs(row.poll.expirationDate).format("MM/DD/YYYY h:mm a"),
+    accessorFn: (row) => {
+      const isClosed = statusMap.dbToClient[row.poll.status] === "Closed";
+
+      if (isClosed) return "-";
+
+      return dayjs(row.poll.expirationDate).format("MM/DD/YYYY h:mm a");
+    },
     header: "Expires At",
   },
   {
     accessorKey: "poll",
     cell: ({ row }) => {
-      const poll: PollWithOptions = row.getValue("poll");
+      const poll: PollWithoutLinks = row.getValue("poll");
 
-      return poll.options.reduce((acc, curr) => {
-        return acc + curr.votes;
-      }, 0);
+      return poll.questions.length;
     },
-    header: "Votes",
-  },
-  {
-    accessorKey: "options",
-    accessorFn: (row) => row.poll.options.length,
-    header: "Options",
+    header: "Questions",
   },
   {
     accessorKey: "poll.id",
     cell: ({ row }) => {
-      const poll: PollWithOptions = row.getValue("poll");
+      const poll: PollWithoutLinks = row.getValue("poll");
 
       return (
         <Link href={`/vote/${poll.id}`} target="_blank">
@@ -61,7 +68,7 @@ export const columns: ColumnDef<PollAndLinks>[] = [
   {
     accessorKey: "poll.id",
     cell: ({ row }) => {
-      const poll: PollWithOptions = row.getValue("poll");
+      const poll: PollWithoutLinks = row.getValue("poll");
 
       return (
         <Link href={`/results/${poll.id}`} target="_blank">

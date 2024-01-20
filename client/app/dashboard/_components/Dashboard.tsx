@@ -3,7 +3,7 @@
 import { Loading } from "@/components/Loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getUserPolls } from "@/lib/actions";
-import { PollAndLinks } from "@/lib/helpers.ts/getPollAndAnswers";
+import { PollWithLinks } from "@/lib/types";
 import { useUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import { DataTable } from "./DataTable";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
-  const [userPolls, setUserPolls] = useState<PollAndLinks[]>([]);
+  const [userPolls, setUserPolls] = useState<PollWithLinks[]>([]);
 
   const { user, isLoaded } = useUser();
 
