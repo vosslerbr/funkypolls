@@ -1,6 +1,6 @@
 import PageTitle from "@/components/PageTitle";
 import { Metadata } from "next";
-import CreateForm from "./_components/CreateForm";
+import AddPollForm from "./components/AddPollForm";
 
 export const metadata: Metadata = {
   title: "FunkyPolls | Create",
@@ -11,7 +11,7 @@ export default function CreatePollPage() {
   return (
     <>
       <PageTitle title="Create a FunkyPoll" />
-      <CreateForm />
+      <AddPollForm />
     </>
   );
 }

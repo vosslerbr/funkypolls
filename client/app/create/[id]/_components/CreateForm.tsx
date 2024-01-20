@@ -2,33 +2,29 @@
 
 import LinksDialog from "@/components/alerts/LinksDialog";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Links } from "@/lib/helpers.ts/getPollAndAnswers";
+import { Links, PollWithLinks } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import dayjs from "dayjs";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { createFunkyPoll } from "../../../lib/actions";
-import { CreatePollFormValues, defaultValues, expirationOptions, formSchema } from "../_helpers/formSetup";
+import { CreateQuestionFormValues, defaultValues, questionFormSchema } from "../_helpers/formSetup";
 
-export default function CreateForm() {
+// TODO this needs to accept a Poll id from the URL so we can connect to the correct poll and prevent people from creating questions without a poll
+export default function CreateForm({ poll }: { poll: PollWithLinks }) {
   const [showLinksDialog, setShowLinksDialog] = useState(false);
   const [links, setLinks] = useState<Links | null>(null);
-  const [passcode, setPasscode] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const { toast } = useToast();
   const { user } = useUser();
 
-  const form = useForm<CreatePollFormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<CreateQuestionFormValues>({
+    resolver: zodResolver(questionFormSchema),
     defaultValues,
   });
 
@@ -41,7 +37,7 @@ export default function CreateForm() {
     },
   });
 
-  async function onSubmit(values: CreatePollFormValues) {
+  async function onSubmit(values: CreateQuestionFormValues) {
     try {
       setSubmitting(true);
 
@@ -51,20 +47,18 @@ export default function CreateForm() {
       const sanitizedValues = {
         ...values,
         options: values.options.filter((option) => option.value),
-        userId: user.id,
-        expirationDate:
-          expirationOptions.find((option) => option.label === values.expiration)?.getDate() ||
-          dayjs().add(1, "day").toDate(),
       };
 
-      const { links, passcode } = await createFunkyPoll(sanitizedValues);
+      console.log("submit would happen here: ", sanitizedValues);
 
-      form.reset();
+      // const { links, passcode } = await createFunkyPoll(sanitizedValues);
 
-      // show modal
-      setLinks(links);
-      setPasscode(passcode);
-      setShowLinksDialog(true);
+      // form.reset();
+
+      // // show modal
+      // setLinks(links);
+      // setPasscode(passcode);
+      // setShowLinksDialog(true);
     } catch (error) {
       console.error(error);
 
@@ -80,7 +74,7 @@ export default function CreateForm() {
 
   return (
     <>
-      <LinksDialog links={links} passcode={passcode} open={showLinksDialog} setShowLinksDialog={setShowLinksDialog} />
+      <LinksDialog links={links} passcode={"N/A"} open={showLinksDialog} setShowLinksDialog={setShowLinksDialog} />
 
       <div className="mt-4">
         <Form {...form}>
@@ -132,7 +126,8 @@ export default function CreateForm() {
               </Button>
             </div>
 
-            <FormField
+            {/* // TODO move this to a modal when opening a Poll from the dashboard */}
+            {/* <FormField
               control={form.control}
               name="expiration"
               render={({ field }) => (
@@ -176,7 +171,7 @@ export default function CreateForm() {
                   </div>
                 </FormItem>
               )}
-            />
+            /> */}
 
             {submitting ? (
               <Button

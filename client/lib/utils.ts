@@ -13,11 +13,13 @@ export function generateLinks(pollId: string): Links {
   };
 }
 
-export function generateRandomString(length: number): string {
+export function generatePasscode(length: number): string {
   const possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let result = "";
   for (let i = 0; i < length; i++) {
     result += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
   }
+
+  // This has a 1 in 2.8 Trillion chance of collision, so it's probably fine to not check for uniqueness
   return result;
 }

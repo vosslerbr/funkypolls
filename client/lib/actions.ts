@@ -1,57 +1,35 @@
 "use server";
 
+import { CreatePollFormValues } from "@/app/create/helpers/pollFormSetup";
 import { auth } from "@clerk/nextjs";
 import axios from "axios";
 import prisma from "./prisma";
 import { PollWithLinks } from "./types";
-import { generateLinks } from "./utils";
+import { generateLinks, generatePasscode } from "./utils";
 
 /**
  * Creates a new poll with the given data. Returns the poll's voting and results links
  */
-export const createFunkyPoll = async (data: any) => {
-  // TODO type this
-  console.log("createFunkyPoll", data);
+export const createFunkyPoll = async (data: CreatePollFormValues) => {
+  const { name, userId } = data;
 
-  // const { question, options, userId, expirationDate, expiration, requirePasscodeToView } = data;
+  const { userId: loggedInUserId } = auth();
 
-  // const { userId: loggedInUserId } = auth();
+  if (!userId || userId !== loggedInUserId) {
+    throw new Error("You can only create polls for your own account");
+  }
 
-  // if (!userId || userId !== loggedInUserId) {
-  //   throw new Error("You can only create polls for your own account");
-  // }
+  const passcode = generatePasscode(8);
 
-  // const passcode = generateRandomString(8);
+  const poll = await prisma.poll.create({
+    data: {
+      name,
+      userId,
+      passcode,
+    },
+  });
 
-  // // TODO check for any active polls with the same passcode
-
-  // const poll = await prisma.poll.create({
-  //   data: {
-  //     question,
-  //     expirationDate: expirationDate.toISOString(),
-  //     expiration,
-  //     userId,
-  //     passcode,
-  //     requirePasscodeToView,
-  //   },
-  // });
-
-  // for (const option of options) {
-  //   await prisma.option.create({
-  //     data: {
-  //       text: option.value,
-  //       poll: {
-  //         connect: {
-  //           id: poll.id,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
-
-  // const pollData = await getPollAndOptions(poll.id);
-
-  // return { links: pollData.links, passcode };
+  return poll.id;
 };
 
 /**
