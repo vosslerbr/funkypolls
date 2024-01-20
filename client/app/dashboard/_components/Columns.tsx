@@ -6,10 +6,26 @@ import statusMap from "@/lib/maps/statusMap";
 import { PollWithLinks, PollWithoutLinks } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { ExternalLinkIcon } from "lucide-react";
+import { ExternalLinkIcon, Eye } from "lucide-react";
 import Link from "next/link";
 
 export const columns: ColumnDef<PollWithLinks>[] = [
+  {
+    accessorKey: "poll.id",
+    cell: ({ row }) => {
+      const poll: PollWithoutLinks = row.getValue("poll");
+
+      return (
+        <Link href={`/dashboard/poll/${poll.id}`}>
+          <Button variant="ghost">
+            <Eye className="h-6 w-6 text-gray-500" />
+          </Button>
+        </Link>
+      );
+    },
+    header: "",
+    id: "results_link",
+  },
   {
     accessorKey: "poll.name",
     header: "Name",
@@ -37,19 +53,19 @@ export const columns: ColumnDef<PollWithLinks>[] = [
       switch (true) {
         case isClosed:
           return (
-            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-600">
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-red-100 text-red-600">
               {poll.status}
             </span>
           );
         case isExpired:
           return (
-            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-600">
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-orange-100 text-orange-600">
               EXPIRED
             </span>
           );
         case isOpen:
           return (
-            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-600">
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-green-100 text-green-600">
               {poll.status}
             </span>
           );
