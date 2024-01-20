@@ -23,7 +23,7 @@ export default function AddPollForm() {
 
   const form = useForm<CreatePollFormValues>({ resolver: zodResolver(pollFormSchema), defaultValues });
 
-  async function onSubmit(values: CreatePollFormValues) {
+  async function savePoll(values: CreatePollFormValues, addQuestion = false) {
     try {
       setSaving(true);
 
@@ -38,10 +38,13 @@ export default function AddPollForm() {
 
       toast({
         title: "Success",
-        description: "Your FunkyPoll has been created.",
+        description: addQuestion ? "Your FunkyPoll has been created." : "Your FunkyPoll has been saved as a draft.",
       });
 
-      router.push(`/create/${pollId}`);
+      form.reset();
+
+      // if we are adding questions, redirect to the create page for the questions
+      if (addQuestion) router.push(`/create/${pollId}`);
     } catch (error) {
       console.error(error);
 
@@ -55,52 +58,64 @@ export default function AddPollForm() {
     }
   }
 
-  return (
-    <>
-      <div className="mt-4">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="mb-8">
-                  <FormLabel>Name your FunkyPoll</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Name" {...field} disabled={saving} />
-                  </FormControl>
-                  <FormDescription>
-                    This is the the name of your FunkyPoll. It should describe what types of questions you will be
-                    asking, or can just be a way to identify your FunkyPoll.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+  async function onSaveDraft(values: CreatePollFormValues) {
+    await savePoll(values);
+  }
 
-            {/* // TODO need better saving state here */}
-            {saving ? (
+  async function onAddQuestions(values: CreatePollFormValues) {
+    await savePoll(values, true);
+  }
+
+  return (
+    <div className="mt-8">
+      <Form {...form}>
+        <form>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="mb-8">
+                <FormLabel>Name your FunkyPoll</FormLabel>
+                <FormControl>
+                  <Input placeholder="Name" {...field} disabled={saving} />
+                </FormControl>
+                <FormDescription>
+                  This is the the name of your FunkyPoll. It should describe what types of questions you will be asking,
+                  or can just be a way to identify your FunkyPoll.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* // TODO need better saving state here */}
+          {saving ? (
+            <Button
+              type="submit"
+              disabled={true}
+              className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </Button>
+          ) : (
+            <>
               <Button
                 type="submit"
-                disabled={true}
-                className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
+                variant="secondary"
+                className="w-full mb-4 sm:w-auto sm:mb-0 sm:mr-4"
+                onClick={form.handleSubmit(onSaveDraft)}>
+                Save as Draft
               </Button>
-            ) : (
-              <>
-                {/* // TODO how do we handle different submit types? */}
-                <Button type="submit" variant="secondary" className="w-full mb-4 sm:w-auto sm:mb-0 sm:mr-4">
-                  Save as Draft
-                </Button>
-                <Button type="submit" className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
-                  Add Questions
-                </Button>
-              </>
-            )}
-          </form>
-        </Form>
-      </div>
-    </>
+              <Button
+                type="submit"
+                className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500"
+                onClick={form.handleSubmit(onAddQuestions)}>
+                Add Questions
+              </Button>
+            </>
+          )}
+        </form>
+      </Form>
+    </div>
   );
 }
