@@ -1,8 +1,10 @@
 "use server";
 
+import { CreateQuestionFormValues } from "@/app/create/[id]/_helpers/formSetup";
 import { CreatePollFormValues } from "@/app/create/helpers/pollFormSetup";
 import { auth } from "@clerk/nextjs";
 import axios from "axios";
+import { revalidatePath } from "next/cache";
 import prisma from "./prisma";
 import { PollWithLinks } from "./types";
 import { generateLinks, generatePasscode } from "./utils";
@@ -30,6 +32,34 @@ export const createFunkyPoll = async (data: CreatePollFormValues) => {
   });
 
   return poll.id;
+};
+
+export const createQuestion = async (data: CreateQuestionFormValues, addAnother: boolean) => {
+  const { question, options, userId, pollId } = data;
+
+  const { userId: loggedInUserId } = auth();
+
+  if (!userId || userId !== loggedInUserId) {
+    throw new Error("You can only create polls for your own account");
+  }
+
+  const newQuestion = prisma.question.create({
+    data: {
+      question,
+      pollId,
+      options: {
+        create: options.map((option) => {
+          return {
+            text: option.value,
+          };
+        }),
+      },
+    },
+  });
+
+  if (!addAnother) revalidatePath("/dashboard");
+
+  return newQuestion;
 };
 
 /**

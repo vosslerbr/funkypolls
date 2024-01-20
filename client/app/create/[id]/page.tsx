@@ -3,7 +3,7 @@ import PageTitle from "@/components/PageTitle";
 import { getPollById } from "@/lib/actions";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import CreateForm from "./_components/CreateForm";
+import CreateQuestionForm from "./_components/CreateQuestionForm";
 
 export const metadata: Metadata = {
   title: "FunkyPolls | Create",
@@ -17,10 +17,10 @@ export default async function CreatePollPage({ params }: { params: { id: string 
 
   return (
     <>
-      <PageTitle title="Create a FunkyPoll" />
+      <PageTitle title="Create a Question" />
 
       <Suspense fallback={<Loading />}>
-        <CreateForm poll={data} />
+        <CreateQuestionForm data={data} />
       </Suspense>
     </>
   );

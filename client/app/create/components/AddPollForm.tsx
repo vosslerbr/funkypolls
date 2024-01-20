@@ -88,32 +88,23 @@ export default function AddPollForm() {
             )}
           />
 
-          {/* // TODO need better saving state here */}
-          {saving ? (
-            <Button
-              type="submit"
-              disabled={true}
-              className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="submit"
-                variant="secondary"
-                className="w-full mb-4 sm:w-auto sm:mb-0 sm:mr-4"
-                onClick={form.handleSubmit(onSaveDraft)}>
-                Save as Draft
-              </Button>
-              <Button
-                type="submit"
-                className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500"
-                onClick={form.handleSubmit(onAddQuestions)}>
-                Add Questions
-              </Button>
-            </>
-          )}
+          <Button
+            type="submit"
+            disabled={!form.getValues().name || saving}
+            variant="secondary"
+            className="w-full mb-4 sm:w-auto sm:mb-0 sm:mr-4"
+            onClick={form.handleSubmit(onSaveDraft)}>
+            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save as Draft
+          </Button>
+          <Button
+            type="submit"
+            disabled={!form.getValues().name || saving}
+            className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500"
+            onClick={form.handleSubmit(onAddQuestions)}>
+            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Add Questions
+          </Button>
         </form>
       </Form>
     </div>

@@ -1,3 +1,4 @@
+import { maxStringFieldLength } from "@/lib/constants";
 import { z } from "zod";
 
 const pollFormSchema = z.object({
@@ -6,8 +7,8 @@ const pollFormSchema = z.object({
     .min(1, {
       message: "A poll name is required",
     })
-    .max(120, {
-      message: "Name cannot be longer than 120 characters",
+    .max(maxStringFieldLength, {
+      message: `Name cannot be longer than ${maxStringFieldLength} characters`,
     }),
   passcode: z.string(),
   userId: z.string(),
