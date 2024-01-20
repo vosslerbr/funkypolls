@@ -1,7 +1,7 @@
 "use client";
 
-import { Loading } from "@/components/Loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getUserPolls } from "@/lib/actions";
 import { PollWithLinks } from "@/lib/types";
 import { useUser } from "@clerk/nextjs";
@@ -56,8 +56,18 @@ export default function Dashboard() {
     }).length;
   }
 
+  // TODO we can probably use Suspense here, but that's for a future me to figure out
   if (loading || !isLoaded || !userPolls) {
-    return <Loading />;
+    return (
+      <Card className="mt-8">
+        <CardHeader>
+          <h2 className="text-2xl font-bold">My FunkyPolls</h2>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="w-full h-[300px] rounded" />
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -67,19 +77,6 @@ export default function Dashboard() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-12 gap-4 mb-8">
-          <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-            <CardHeader className="text-blue-600 bg-blue-100 mb-6 rounded-t border">
-              <CardTitle>
-                <div className="flex flex-row justify-between">
-                  Total <Hash className="w-6 h-6" />
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{userPolls?.length || "None, create a FunkyPoll to get started!"}</p>
-            </CardContent>
-          </Card>
-
           <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
             <CardHeader className="text-green-600 bg-green-100 mb-6 rounded-t">
               <CardTitle>
@@ -116,6 +113,19 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <p>{countExpiredPolls()}</p>
+            </CardContent>
+          </Card>
+
+          <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
+            <CardHeader className="text-blue-600 bg-blue-100 mb-6 rounded-t border">
+              <CardTitle>
+                <div className="flex flex-row justify-between">
+                  Total <Hash className="w-6 h-6" />
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{userPolls?.length || "None, create a FunkyPoll to get started!"}</p>
             </CardContent>
           </Card>
         </div>
