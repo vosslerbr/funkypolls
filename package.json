@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-client": "cd client && npm run dev",
-    "dev-server": "cd server && npm run dev"
+    "dev-server": "cd server && npm run dev",
+    "dev": "concurrently --kill-others \"npm run dev-server\" \"npm run dev-client\""
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/vosslerbr/funkypolls/issues"
   },
-  "homepage": "https://github.com/vosslerbr/funkypolls#readme"
+  "homepage": "https://github.com/vosslerbr/funkypolls#readme",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
 }

@@ -1,4 +1,9 @@
-const expirationMap = {
+import { Expiration } from "@prisma/client";
+
+const expirationMap: {
+  dbToClient: { [key in Expiration]: string };
+  clientToDb: { [key: string]: Expiration };
+} = {
   dbToClient: {
     FIVE_MINUTES: "5 minutes",
     TEN_MINUTES: "10 minutes",
