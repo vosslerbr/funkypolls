@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import expirationMap from "@/lib/maps/expirationMap";
 import statusMap from "@/lib/maps/statusMap";
 import { PollWithLinks } from "@/lib/types";
+import { formatExpirationDate } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { CalendarClock, Check, Copy, DoorOpen, HelpCircle, KeyRound, Settings2 } from "lucide-react";
@@ -139,7 +140,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p>{dayjs(data.poll.expirationDate).format("MM/DD/YYYY h:mm a")}</p>
+                <p>{formatExpirationDate(data.poll.expirationDate, data.poll.status)}</p>
               </CardContent>
             </Card>
           </div>

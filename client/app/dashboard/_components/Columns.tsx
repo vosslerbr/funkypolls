@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import expirationMap from "@/lib/maps/expirationMap";
 import statusMap from "@/lib/maps/statusMap";
 import { PollWithLinks, PollWithoutLinks } from "@/lib/types";
+import { formatExpirationDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { ExternalLinkIcon, Eye } from "lucide-react";
@@ -76,13 +77,7 @@ export const columns: ColumnDef<PollWithLinks>[] = [
   },
   {
     accessorKey: "expirationDate",
-    accessorFn: (row) => {
-      const isClosed = statusMap.dbToClient[row.poll.status] === "Closed";
-
-      if (isClosed) return "-";
-
-      return dayjs(row.poll.expirationDate).format("MM/DD/YYYY h:mm a");
-    },
+    accessorFn: (row) => formatExpirationDate(row.poll.expirationDate, row.poll.status),
     header: "Expires At",
   },
   {

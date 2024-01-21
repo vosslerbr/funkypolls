@@ -1,4 +1,6 @@
+import { Status } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx";
+import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
 import { Links } from "./types";
 
@@ -22,4 +24,13 @@ export function generatePasscode(length: number): string {
 
   // This has a 1 in 2.8 Trillion chance of collision, so it's probably fine to not check for uniqueness
   return result;
+}
+
+// formats the given expiration date into a string, if poll hasn't been opened yet, return "-" since there is no valid expiration date yet
+export function formatExpirationDate(expirationDate: Date, pollStatus: Status): string {
+  const isClosed = pollStatus === Status.CLOSED;
+
+  if (isClosed) return "-";
+
+  return dayjs(expirationDate).format("MM/DD/YYYY h:mm a");
 }
