@@ -14,13 +14,13 @@ export default async function VotePage({ params }: { params: { id: string } }) {
   const { id } = params;
 
   const data = await getPollById(id);
-  const { requirePasscodeToView } = await checkForPollPasscode(data.poll.id);
+  const requirePasscodeToView = await checkForPollPasscode(data.poll.id);
 
   return (
     <>
       <PageTitle title="Vote" />
       <Suspense fallback={<Loading />}>
-        <VoteMain poll={data.poll} passcodeRequiredToView={requirePasscodeToView} />
+        <VoteMain pollData={data} passcodeRequiredToView={requirePasscodeToView} />
       </Suspense>
     </>
   );

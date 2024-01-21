@@ -3,7 +3,6 @@ import PageTitle from "@/components/PageTitle";
 import { getPollById } from "@/lib/actions";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import PollResults from "./_components/PollResults";
 
 export const metadata: Metadata = {
   title: "FunkyPolls | Results",
@@ -18,9 +17,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
   return (
     <>
       <PageTitle title="Results" />
-      <Suspense fallback={<Loading />}>
-        <PollResults pollAndLinks={data} />
-      </Suspense>
+      <Suspense fallback={<Loading />}>{/* <PollResults pollAndLinks={data} /> */}</Suspense>
     </>
   );
 }

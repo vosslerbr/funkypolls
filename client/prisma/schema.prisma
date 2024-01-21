@@ -22,6 +22,15 @@ enum Expiration {
   FIFTEEN_MINUTES
 }
 
+enum Type {
+  SINGLE_SELECT
+  MULTI_SELECT
+  BOOLEAN
+  SLIDER
+  RANGE
+  RANKING
+}
+
 model Poll {
   id        String      @id @default(cuid())
   name     String
@@ -43,6 +52,7 @@ model Question {
   poll      Poll        @relation(fields: [pollId], references: [id])
   pollId    String
   options   Option[]
+  type Type @default(SINGLE_SELECT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -52,7 +62,7 @@ model Question {
 model Option {
   id        String      @id @default(cuid())
   text      String
-  votes     Int        @default(0)
+  votes     Int        @default(0) // TODO replace with an 'answer' relation
   question      Question     @relation(fields: [questionId], references: [id])
   questionId    String
   createdAt DateTime @default(now())

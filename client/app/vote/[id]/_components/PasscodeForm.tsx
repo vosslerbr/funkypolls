@@ -1,30 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { validatePollPasscode } from "@/lib/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  PasscodeFormValues,
-  passcodeDefaultValues,
-  passcodeFormSchema,
-} from "../_helpers/formSetup";
+import { PasscodeFormValues, passcodeDefaultValues, passcodeFormSchema } from "../_helpers/passcodeFormSetup";
 
 export default function PasscodeForm({
-  id,
+  pollId,
   setValidated,
 }: {
-  id: string;
-
+  pollId: string;
   setValidated: (validated: boolean) => void;
 }) {
   const passcodeForm = useForm<PasscodeFormValues>({
@@ -36,7 +23,7 @@ export default function PasscodeForm({
     try {
       const { passcode } = values;
 
-      const isValid = await validatePollPasscode(id, passcode);
+      const isValid = await validatePollPasscode(pollId, passcode);
 
       setValidated(isValid);
 
@@ -69,17 +56,15 @@ export default function PasscodeForm({
                     <Input type="password" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Please enter the passcode you were given for accessing this FunkyPoll. If you
-                    don&apos;t have one, contact the creator of this poll.
+                    Please enter the passcode you were given for accessing this FunkyPoll. If you don&apos;t have one,
+                    contact the creator of this poll.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button
-              type="submit"
-              className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+            <Button type="submit" className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
               Submit
             </Button>
           </form>

@@ -109,7 +109,7 @@ export async function validatePollPasscode(id: string, passcode: string) {
   });
 
   if (!poll) {
-    return false;
+    throw new Error("This FunkyPoll doesn't seem to exist. Please try again.");
   }
 
   const isPasscodeValid = passcode === poll.passcode;
@@ -117,7 +117,7 @@ export async function validatePollPasscode(id: string, passcode: string) {
   return isPasscodeValid;
 }
 
-export async function checkForPollPasscode(id: string) {
+export async function checkForPollPasscode(id: string): Promise<boolean> {
   const poll = await prisma.poll.findUnique({
     where: {
       id,
@@ -127,17 +127,9 @@ export async function checkForPollPasscode(id: string) {
     },
   });
 
-  if (!poll) {
-    return {
-      pollFound: false,
-      requirePasscodeToView: false,
-    };
-  }
+  if (!poll) throw new Error("This FunkyPoll doesn't seem to exist. Please try again.");
 
-  return {
-    pollFound: true,
-    requirePasscodeToView: poll.requirePasscodeToView,
-  };
+  return poll.requirePasscodeToView;
 }
 
 /**
@@ -172,7 +164,7 @@ export async function getPollById(id: string): Promise<PollWithLinks> {
 /**
  * Handles registering a vote for a poll. Returns the poll with the updated vote count.
  */
-export async function handleVote({
+export async function handleAnswerQuestion({
   pollId,
   optionId,
   passcode,
@@ -181,11 +173,12 @@ export async function handleVote({
   optionId: string;
   passcode: string;
 }) {
-  const isPasscodeValid = await validatePollPasscode(pollId, passcode);
+  // TODO reenabled at a poll level
+  // const isPasscodeValid = await validatePollPasscode(pollId, passcode);
 
-  if (!isPasscodeValid) {
-    throw new Error("Invalid passcode");
-  }
+  // if (!isPasscodeValid) {
+  //   throw new Error("Invalid passcode");
+  // }
 
   // increment the voteCount for the answer by 1
   await prisma.option.update({
@@ -199,5 +192,6 @@ export async function handleVote({
     },
   });
 
+  // TODO we'll need to update socket server to handle this at a question level, i'd say
   await axios.post(`${process.env.WS_SERVER_BASE_URL}/api/v1/newvote/${pollId}`);
 }
