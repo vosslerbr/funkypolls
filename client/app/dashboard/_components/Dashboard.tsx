@@ -5,8 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getUserPolls } from "@/lib/actions";
 import { PollWithLinks } from "@/lib/types";
 import { useUser } from "@clerk/nextjs";
-import dayjs from "dayjs";
-import { CalendarClock, Check, Hash, X } from "lucide-react";
+import { Status } from "@prisma/client";
+import { CalendarClock, Check, DraftingCompass, Hash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { columns } from "./Columns";
 import { DataTable } from "./DataTable";
@@ -39,20 +39,26 @@ export default function Dashboard() {
 
   function countOpenPolls() {
     return userPolls.filter(({ poll }) => {
-      return poll.status === "OPEN" && dayjs(poll.expirationDate).isAfter(dayjs());
+      return poll.status === Status.OPEN;
     }).length;
   }
 
-  function countClosedPolls() {
+  function countDraftPolls() {
     return userPolls.filter(({ poll }) => {
-      return poll.status === "CLOSED";
+      return poll.status === Status.DRAFT;
     }).length;
   }
 
   function countExpiredPolls() {
     // once a poll is opened, it can't be closed and that is when expiration date is set too
     return userPolls.filter(({ poll }) => {
-      return poll.status === "OPEN" && dayjs(poll.expirationDate).isBefore(dayjs());
+      return poll.status === Status.EXPIRED;
+    }).length;
+  }
+
+  function countArchivedPolls() {
+    return userPolls.filter(({ poll }) => {
+      return poll.status === Status.ARCHIVED;
     }).length;
   }
 
@@ -78,6 +84,19 @@ export default function Dashboard() {
       <CardContent>
         <div className="grid grid-cols-12 gap-4 mb-8">
           <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
+            <CardHeader className="text-blue-600 bg-blue-100 mb-6 rounded-t">
+              <CardTitle>
+                <div className="flex flex-row justify-between">
+                  Draft <DraftingCompass className="w-6 h-6" />
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{countDraftPolls()}</p>
+            </CardContent>
+          </Card>
+
+          <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
             <CardHeader className="text-green-600 bg-green-100 mb-6 rounded-t">
               <CardTitle>
                 <div className="flex flex-row justify-between">
@@ -87,19 +106,6 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <p>{countOpenPolls()}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-            <CardHeader className="text-red-600 bg-red-100 mb-6 rounded-t">
-              <CardTitle>
-                <div className="flex flex-row justify-between">
-                  Closed <X className="w-6 h-6" />
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{countClosedPolls()}</p>
             </CardContent>
           </Card>
 
@@ -117,15 +123,15 @@ export default function Dashboard() {
           </Card>
 
           <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-            <CardHeader className="text-blue-600 bg-blue-100 mb-6 rounded-t border">
+            <CardHeader className="text-gray-600 bg-gray-100 mb-6 rounded-t border">
               <CardTitle>
                 <div className="flex flex-row justify-between">
-                  Total <Hash className="w-6 h-6" />
+                  Archived <Hash className="w-6 h-6" />
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p>{userPolls?.length || "None, create a FunkyPoll to get started!"}</p>
+              <p>{countArchivedPolls()}</p>
             </CardContent>
           </Card>
         </div>

@@ -2,22 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import expirationMap from "@/lib/maps/expirationMap";
-import statusMap from "@/lib/maps/statusMap";
-import { PollWithLinks, PollWithoutLinks } from "@/lib/types";
+import { PollWithLinks } from "@/lib/types";
 import { formatExpirationDate } from "@/lib/utils";
+import { Status } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import dayjs from "dayjs";
-import { ExternalLinkIcon, Eye } from "lucide-react";
+import { ArrowUpDown, Eye } from "lucide-react";
 import Link from "next/link";
 
 export const columns: ColumnDef<PollWithLinks>[] = [
   {
-    accessorKey: "poll.id",
+    id: "id",
     cell: ({ row }) => {
-      const poll: PollWithoutLinks = row.getValue("poll");
+      const pollId: string = row.getValue("id");
 
       return (
-        <Link href={`/dashboard/poll/${poll.id}`}>
+        <Link href={`/dashboard/poll/${pollId}`}>
           <Button variant="ghost">
             <Eye className="h-6 w-6 text-gray-500" />
           </Button>
@@ -25,102 +24,136 @@ export const columns: ColumnDef<PollWithLinks>[] = [
       );
     },
     header: "",
-    id: "results_link",
+    accessorFn: (row) => row.poll.id,
   },
   {
-    accessorKey: "poll.name",
-    header: "Name",
+    id: "name",
+    accessorFn: (row) => row.poll.name,
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
-    accessorKey: "poll.passcode",
-    header: "Passcode",
-  },
-  {
-    accessorKey: "poll.expiration",
-    header: "Open For",
-    accessorFn: (row) => expirationMap.dbToClient[row.poll.expiration],
-  },
-  {
-    accessorKey: "poll.status",
-    header: "Status",
-    accessorFn: (row) => statusMap.dbToClient[row.poll.status],
+    id: "status",
+    accessorFn: (row) => row.poll.status,
     cell: ({ row }) => {
-      const poll: PollWithoutLinks = row.getValue("poll");
+      const status: Status = row.getValue("status");
 
-      const isClosed = statusMap.dbToClient[poll.status] === "Closed";
-      const isExpired = statusMap.dbToClient[poll.status] === "Open" && dayjs(poll.expirationDate).isBefore(dayjs());
-      const isOpen = statusMap.dbToClient[poll.status] === "Open";
-
-      switch (true) {
-        case isClosed:
+      switch (status) {
+        case Status.DRAFT:
           return (
-            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-red-100 text-red-600">
-              {poll.status}
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-blue-100 text-blue-600">
+              {status}
             </span>
           );
-        case isExpired:
+        case Status.EXPIRED:
           return (
             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-orange-100 text-orange-600">
-              EXPIRED
+              {status}
             </span>
           );
-        case isOpen:
+        case Status.OPEN:
           return (
             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-green-100 text-green-600">
-              {poll.status}
+              {status}
+            </span>
+          );
+        case Status.ARCHIVED:
+          return (
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-gray-100 text-gray-600">
+              {status}
             </span>
           );
         default:
           return <span>-</span>;
       }
     },
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
-    accessorKey: "expirationDate",
+    accessorKey: "poll.passcode",
+    header: "Passcode",
+  },
+  {
+    id: "expiration",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Open For
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    accessorFn: (row) => expirationMap.dbToClient[row.poll.expiration],
+  },
+  {
+    id: "expirationDate",
     accessorFn: (row) => formatExpirationDate(row.poll.expirationDate, row.poll.status),
-    header: "Expires At",
-  },
-  {
-    accessorKey: "poll",
-    cell: ({ row }) => {
-      const poll: PollWithoutLinks = row.getValue("poll");
-
-      return poll.questions.length;
-    },
-    header: "Questions",
-  },
-  {
-    accessorKey: "poll.id",
-    cell: ({ row }) => {
-      const poll: PollWithoutLinks = row.getValue("poll");
-
+    header: ({ column }) => {
       return (
-        <Link href={`/vote/${poll.id}`} target="_blank">
-          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
-            Vote
-            <ExternalLinkIcon className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Expiration Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       );
     },
-    header: "",
-    id: "vote_link",
   },
   {
-    accessorKey: "poll.id",
-    cell: ({ row }) => {
-      const poll: PollWithoutLinks = row.getValue("poll");
-
+    id: "poll",
+    accessorFn: (row) => row.poll.questions.length,
+    header: ({ column }) => {
       return (
-        <Link href={`/results/${poll.id}`} target="_blank">
-          <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
-            Results
-            <ExternalLinkIcon className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Questions
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       );
     },
-    header: "",
-    id: "results_link",
   },
+  // {
+  //   accessorKey: "poll.id",
+  //   cell: ({ row }) => {
+  //     const poll: PollWithoutLinks = row.getValue("poll");
+
+  //     return (
+  //       <Button className="bg-gradient-to-r from-violet-700 to-purple-500" asChild>
+  //         <Link href={`/vote/${poll.id}`}>
+  //           Vote
+  //           <ExternalLinkIcon className="ml-2 h-4 w-4" />
+  //         </Link>
+  //       </Button>
+  //     );
+  //   },
+  //   header: "",
+  //   id: "vote_link",
+  // },
+  // {
+  //   accessorKey: "poll.id",
+  //   cell: ({ row }) => {
+  //     const poll: PollWithoutLinks = row.getValue("poll");
+
+  //     return (
+  //       <Link href={`/results/${poll.id}`}>
+  //         <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
+  //           Results
+  //           <ExternalLinkIcon className="ml-2 h-4 w-4" />
+  //         </Button>
+  //       </Link>
+  //     );
+  //   },
+  //   header: "",
+  //   id: "results_link",
+  // },
 ];

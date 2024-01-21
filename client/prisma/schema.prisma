@@ -12,8 +12,10 @@ generator client {
 }
 
 enum Status {
+  DRAFT
   OPEN
-  CLOSED
+  EXPIRED
+  ARCHIVED
 }
 
 enum Expiration {
@@ -40,8 +42,7 @@ model Poll {
   passcode  String
   requirePasscodeToView Boolean @default(false)
   userId    String // poll creator's Clerk ID
-  status Status @default(CLOSED)
-  archived Boolean @default(false)
+  status Status @default(DRAFT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

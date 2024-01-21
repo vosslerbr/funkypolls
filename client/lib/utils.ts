@@ -28,9 +28,9 @@ export function generatePasscode(length: number): string {
 
 // formats the given expiration date into a string, if poll hasn't been opened yet, return "-" since there is no valid expiration date yet
 export function formatExpirationDate(expirationDate: Date, pollStatus: Status): string {
-  const isClosed = pollStatus === Status.CLOSED;
+  const isDraftOrArchived = pollStatus === Status.DRAFT || pollStatus === Status.ARCHIVED;
 
-  if (isClosed) return "-";
+  if (isDraftOrArchived) return "";
 
   return dayjs(expirationDate).format("MM/DD/YYYY h:mm a");
 }
