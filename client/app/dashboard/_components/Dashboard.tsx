@@ -6,7 +6,7 @@ import { getUserPolls } from "@/lib/actions";
 import { PollWithLinks } from "@/lib/types";
 import { useUser } from "@clerk/nextjs";
 import { Status } from "@prisma/client";
-import { CalendarClock, Check, DraftingCompass, Hash } from "lucide-react";
+import { CalendarClock, DoorOpen, Hash, PencilLine } from "lucide-react";
 import { useEffect, useState } from "react";
 import { columns } from "./Columns";
 import { DataTable } from "./DataTable";
@@ -87,7 +87,7 @@ export default function Dashboard() {
             <CardHeader className="text-blue-600 bg-blue-100 mb-6 rounded-t">
               <CardTitle>
                 <div className="flex flex-row justify-between">
-                  Draft <DraftingCompass className="w-6 h-6" />
+                  Draft <PencilLine className="w-6 h-6" />
                 </div>
               </CardTitle>
             </CardHeader>
@@ -100,7 +100,7 @@ export default function Dashboard() {
             <CardHeader className="text-green-600 bg-green-100 mb-6 rounded-t">
               <CardTitle>
                 <div className="flex flex-row justify-between">
-                  Open <Check className="w-6 h-6" />
+                  Open <DoorOpen className="w-6 h-6" />
                 </div>
               </CardTitle>
             </CardHeader>
@@ -110,7 +110,7 @@ export default function Dashboard() {
           </Card>
 
           <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-            <CardHeader className="text-orange-600 bg-orange-100 mb-6 rounded-t">
+            <CardHeader className="text-red-600 bg-red-100 mb-6 rounded-t">
               <CardTitle>
                 <div className="flex flex-row justify-between">
                   Expired <CalendarClock className="w-6 h-6" />

@@ -53,7 +53,7 @@ export const columns: ColumnDef<PollWithLinks>[] = [
           );
         case Status.EXPIRED:
           return (
-            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-orange-100 text-orange-600">
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-red-100 text-red-600">
               {status}
             </span>
           );

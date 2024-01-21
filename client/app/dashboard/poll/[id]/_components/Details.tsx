@@ -4,11 +4,10 @@ import { Loading } from "@/components/Loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import expirationMap from "@/lib/maps/expirationMap";
-import statusMap from "@/lib/maps/statusMap";
 import { PollWithLinks } from "@/lib/types";
 import { formatExpirationDate } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
-import dayjs from "dayjs";
+import { Status } from "@prisma/client";
 import { CalendarClock, Check, Copy, DoorOpen, HelpCircle, KeyRound, Settings2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -17,27 +16,30 @@ export default function Details({ data }: { data: PollWithLinks }) {
 
   const { user, isLoaded } = useUser();
 
+  // TODO refactor this to be reusable. Also currently used in dashboard table
   function renderStatus({ poll }: PollWithLinks) {
-    const isClosed = statusMap.dbToClient[poll.status] === "Closed";
-    const isExpired = statusMap.dbToClient[poll.status] === "Open" && dayjs(poll.expirationDate).isBefore(dayjs());
-    const isOpen = statusMap.dbToClient[poll.status] === "Open";
-
-    switch (true) {
-      case isClosed:
+    switch (poll.status) {
+      case Status.DRAFT:
         return (
-          <span className="px-2 text-sm inline-flex leading-5 font-semibold rounded bg-red-100 text-red-600">
+          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-blue-100 text-blue-600">
             {poll.status}
           </span>
         );
-      case isExpired:
+      case Status.EXPIRED:
         return (
-          <span className="px-2 text-sm inline-flex leading-5 font-semibold rounded bg-orange-100 text-orange-600">
-            EXPIRED
+          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-red-100 text-red-600">
+            {poll.status}
           </span>
         );
-      case isOpen:
+      case Status.OPEN:
         return (
-          <span className="px-2 text-sm inline-flex leading-5 font-semibold rounded bg-green-100 text-green-600">
+          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-green-100 text-green-600">
+            {poll.status}
+          </span>
+        );
+      case Status.ARCHIVED:
+        return (
+          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-gray-100 text-gray-600">
             {poll.status}
           </span>
         );
@@ -131,18 +133,21 @@ export default function Details({ data }: { data: PollWithLinks }) {
                 <p>{expirationMap.dbToClient[data.poll.expiration]}</p>
               </CardContent>
             </Card>
-            <Card className="col-span-12 sm:col-span-6 lg:col-span-4">
-              <CardHeader>
-                <CardTitle>
-                  <div className="flex flex-row justify-between">
-                    Expires On <CalendarClock className="w-6 h-6 text-gray-400" />
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>{formatExpirationDate(data.poll.expirationDate, data.poll.status)}</p>
-              </CardContent>
-            </Card>
+
+            {data.poll.status === Status.OPEN && (
+              <Card className="col-span-12 sm:col-span-6 lg:col-span-4">
+                <CardHeader>
+                  <CardTitle>
+                    <div className="flex flex-row justify-between">
+                      Expiration Date <CalendarClock className="w-6 h-6 text-gray-400" />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>{formatExpirationDate(data.poll.expirationDate, data.poll.status)}</p>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </CardContent>
       </Card>
