@@ -6,11 +6,15 @@ const statusMap: {
 } = {
   dbToClient: {
     OPEN: "Open",
-    CLOSED: "Closed",
+    DRAFT: "Draft",
+    EXPIRED: "Expired",
+    ARCHIVED: "Archived",
   },
   clientToDb: {
     Open: "OPEN",
-    Closed: "CLOSED",
+    Draft: "DRAFT",
+    Expired: "EXPIRED",
+    Archived: "ARCHIVED",
   },
 };
 
