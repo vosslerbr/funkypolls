@@ -1,30 +1,65 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import expirationMap from "@/lib/maps/expirationMap";
 import { PollWithLinks } from "@/lib/types";
 import { formatExpirationDate } from "@/lib/utils";
 import { Status } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Eye } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 export const columns: ColumnDef<PollWithLinks>[] = [
   {
-    id: "id",
+    id: "actions",
     cell: ({ row }) => {
-      const pollId: string = row.getValue("id");
+      const { poll, links } = row.original;
+
+      const allowedToOpen = poll.status === Status.DRAFT;
 
       return (
-        <Link href={`/dashboard/poll/${pollId}`}>
-          <Button variant="ghost">
-            <Eye className="h-6 w-6 text-gray-500" />
-          </Button>
-        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Link href={`/dashboard/poll/${poll.id}`}>View Details</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/results/${poll.id}`}>View Results</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(links.voteUrl)}>
+              Copy Vote Link
+            </DropdownMenuItem>
+
+            {allowedToOpen && <DropdownMenuItem>Mark as Open</DropdownMenuItem>}
+
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(poll.passcode)}>
+              Copy Passcode
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <div>Archive</div>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600 hover:bg-red-200 hover:text-red-600 focus:bg-red-200 focus:text-red-600">
+              <div>Delete</div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
-    header: "",
-    accessorFn: (row) => row.poll.id,
   },
   {
     id: "name",
