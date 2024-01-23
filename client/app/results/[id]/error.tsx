@@ -1,24 +1,13 @@
 "use client";
 
 import PageTitle from "@/components/PageTitle";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import ErrorMessage from "@/components/messages/ErrorMessage";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <>
       <PageTitle title="Results" />
-      <Alert variant="destructive" className="mt-4">
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>
-          {error.message || "Something went wrong. Please try again."}
-        </AlertDescription>
-      </Alert>
+      <ErrorMessage error={error} />
     </>
   );
 }

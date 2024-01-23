@@ -1,5 +1,6 @@
 "use client";
 
+import { statusColorMap } from "@/app/dashboard/_components/Dashboard";
 import { Loading } from "@/components/Loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -18,34 +19,13 @@ export default function Details({ data }: { data: PollWithLinks }) {
 
   // TODO refactor this to be reusable. Also currently used in dashboard table
   function renderStatus({ poll }: PollWithLinks) {
-    switch (poll.status) {
-      case Status.DRAFT:
-        return (
-          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-blue-100 text-blue-600">
-            {poll.status}
-          </span>
-        );
-      case Status.EXPIRED:
-        return (
-          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-red-100 text-red-600">
-            {poll.status}
-          </span>
-        );
-      case Status.OPEN:
-        return (
-          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-green-100 text-green-600">
-            {poll.status}
-          </span>
-        );
-      case Status.ARCHIVED:
-        return (
-          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-gray-100 text-gray-600">
-            {poll.status}
-          </span>
-        );
-      default:
-        return <span>-</span>;
-    }
+    const { status } = poll;
+
+    return (
+      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap[status]}`}>
+        {status}
+      </span>
+    );
   }
 
   useEffect(() => {
@@ -64,7 +44,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
 
   return (
     <>
-      <Card className="mt-8">
+      <Card>
         <CardHeader>
           <h2 className="text-2xl font-bold">About this FunkyPoll</h2>
         </CardHeader>

@@ -67,7 +67,7 @@ export default function AddPollForm() {
   }
 
   return (
-    <div className="mt-8">
+    <>
       <Form {...form}>
         <form>
           <FormField
@@ -107,6 +107,6 @@ export default function AddPollForm() {
           </Button>
         </form>
       </Form>
-    </div>
+    </>
   );
 }

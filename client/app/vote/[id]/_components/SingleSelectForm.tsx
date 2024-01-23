@@ -1,5 +1,5 @@
 import { Loading } from "@/components/Loading";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import InfoMessage from "@/components/messages/InfoMessage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -8,7 +8,7 @@ import { toast } from "@/components/ui/use-toast";
 import { handleAnswerQuestion } from "@/lib/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Prisma } from "@prisma/client";
-import { HelpCircle, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -80,76 +80,71 @@ export default function SingleSelectForm({
   return (
     <>
       {hasAnsweredQuestion ? (
-        <Card className="mt-8">
+        <Card className="mb-8">
           <CardHeader>
             <h2 className="text-2xl font-bold">{questionText}</h2>
           </CardHeader>
           <CardContent>
-            <Alert className="mt-4">
-              <HelpCircle className="h-4 w-4" />
-              <AlertTitle>You&apos;ve already answered this question</AlertTitle>
-              <AlertDescription>
-                You can view the results of this question&apos;s FunkyPoll using the button below.
-              </AlertDescription>
-            </Alert>
+            <InfoMessage
+              title="You've answered this question"
+              message="You can view the results of this question's FunkyPoll using the button below."
+            />
           </CardContent>
           <CardFooter>
-            <Link href={`/results/${pollId}`} className="mt-4">
+            <Link href={`/results/${pollId}`}>
               <Button className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">View Results</Button>
             </Link>
           </CardFooter>
         </Card>
       ) : (
-        <Card className="mt-8">
+        <Card className="mb-8">
           <CardHeader>
             <h2 className="text-2xl font-bold">{questionText}</h2>
           </CardHeader>
           <CardContent>
-            <div className="mt-4">
-              <Form {...voteForm}>
-                <form onSubmit={voteForm.handleSubmit(onSubmit)}>
-                  <FormField
-                    control={voteForm.control}
-                    name="optionId"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3 mb-8">
-                        <FormLabel>My vote:</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex flex-col space-y-1">
-                            {options.map((option) => (
-                              <FormItem className="flex items-center space-x-3 space-y-0" key={option.id}>
-                                <FormControl>
-                                  <RadioGroupItem value={option.id} />
-                                </FormControl>
-                                <FormLabel className="font-normal">{option.text}</FormLabel>
-                              </FormItem>
-                            ))}
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {submitting ? (
-                    <Button
-                      type="submit"
-                      disabled={true}
-                      className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving your vote...
-                    </Button>
-                  ) : (
-                    <Button type="submit" className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
-                      Submit
-                    </Button>
+            <Form {...voteForm}>
+              <form onSubmit={voteForm.handleSubmit(onSubmit)}>
+                <FormField
+                  control={voteForm.control}
+                  name="optionId"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3 mb-8">
+                      <FormLabel>My vote:</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col space-y-1">
+                          {options.map((option) => (
+                            <FormItem className="flex items-center space-x-3 space-y-0" key={option.id}>
+                              <FormControl>
+                                <RadioGroupItem value={option.id} />
+                              </FormControl>
+                              <FormLabel className="font-normal">{option.text}</FormLabel>
+                            </FormItem>
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </form>
-              </Form>
-            </div>
+                />
+
+                {submitting ? (
+                  <Button
+                    type="submit"
+                    disabled={true}
+                    className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving your answer...
+                  </Button>
+                ) : (
+                  <Button type="submit" className="sm:w-auto w-full bg-gradient-to-r from-violet-700 to-purple-500">
+                    Save Answer
+                  </Button>
+                )}
+              </form>
+            </Form>
           </CardContent>
         </Card>
       )}

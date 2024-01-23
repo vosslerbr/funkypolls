@@ -150,7 +150,7 @@ export async function getPollById(id: string): Promise<PollWithLinks> {
       },
     });
 
-    if (!poll) {
+    if (!poll || poll.status === "ARCHIVED") {
       throw new Error("Poll not found");
     }
 

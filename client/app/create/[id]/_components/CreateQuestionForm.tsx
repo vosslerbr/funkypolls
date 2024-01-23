@@ -88,12 +88,10 @@ export default function CreateQuestionForm({ data: { poll } }: { data: PollWithL
 
   return (
     <>
-      <div className="mt-8">
-        <h3 className="sm:text-3xl text-2xl font-bold text-gray-950">
-          <span className="text-gray-400">Poll: </span>
-          {poll.name}
-        </h3>
-      </div>
+      <h3 className="sm:text-3xl text-2xl font-bold text-gray-950">
+        <span className="text-gray-400">Poll: </span>
+        {poll.name}
+      </h3>
 
       <div className="mt-8">
         <Form {...form}>

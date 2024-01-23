@@ -39,7 +39,7 @@ export default function PasscodeForm({
   }
 
   return (
-    <Card className="mt-8">
+    <Card>
       <CardHeader>
         <h2 className="text-2xl font-bold">Enter Passcode</h2>
       </CardHeader>

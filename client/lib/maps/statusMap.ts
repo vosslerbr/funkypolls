@@ -1,6 +1,6 @@
 import { Status } from "@prisma/client";
 
-const statusMap: {
+export const statusMap: {
   dbToClient: { [key in Status]: string };
   clientToDb: { [key: string]: Status };
 } = {
@@ -17,5 +17,3 @@ const statusMap: {
     Archived: "ARCHIVED",
   },
 };
-
-export default statusMap;
