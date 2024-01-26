@@ -54,7 +54,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
               <CardHeader>
                 <CardTitle>
                   <div className="flex flex-row justify-between">
-                    Questions <HelpCircle className="w-6 h-6 text-gray-400" />
+                    Questions <HelpCircle className="w-6 h-6 text-slate-400" />
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -66,7 +66,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
               <CardHeader>
                 <CardTitle>
                   <div className="flex flex-row justify-between">
-                    Passcode <KeyRound className="w-6 h-6 text-gray-400" />
+                    Passcode <KeyRound className="w-6 h-6 text-slate-400" />
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -80,12 +80,12 @@ export default function Details({ data }: { data: PollWithLinks }) {
                   {copiedPasscode ? (
                     <>
                       Copied!
-                      <Check className="ml-2 h-4 w-4 text-gray-400" />
+                      <Check className="ml-2 h-4 w-4 text-slate-400" />
                     </>
                   ) : (
                     <>
                       {data.poll.passcode}
-                      <Copy className="ml-2 h-4 w-4 text-gray-400" />
+                      <Copy className="ml-2 h-4 w-4 text-slate-400" />
                     </>
                   )}
                 </p>
@@ -95,7 +95,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
               <CardHeader>
                 <CardTitle>
                   <div className="flex flex-row justify-between">
-                    Status <Settings2 className="w-6 h-6 text-gray-400" />
+                    Status <Settings2 className="w-6 h-6 text-slate-400" />
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -105,7 +105,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
               <CardHeader>
                 <CardTitle>
                   <div className="flex flex-row justify-between">
-                    Open For <DoorOpen className="w-6 h-6 text-gray-400" />
+                    Open For <DoorOpen className="w-6 h-6 text-slate-400" />
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -119,7 +119,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
                 <CardHeader>
                   <CardTitle>
                     <div className="flex flex-row justify-between">
-                      Expiration Date <CalendarClock className="w-6 h-6 text-gray-400" />
+                      Expiration Date <CalendarClock className="w-6 h-6 text-slate-400" />
                     </div>
                   </CardTitle>
                 </CardHeader>
@@ -139,7 +139,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
               <h2 className="text-2xl font-bold">{question.question}</h2>
             </CardHeader>
             <CardContent>
-              <h3 className="text-xl text-gray-500">Options</h3>
+              <h3 className="text-xl text-slate-500">Options</h3>
               {question.options.map((option, index) => {
                 const isLastOption = index === question.options.length - 1;
 

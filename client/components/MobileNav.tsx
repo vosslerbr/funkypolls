@@ -93,7 +93,7 @@ export default function MobileNav() {
 
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
           <SheetContent>
-            {!isLoaded ? <Loader2 className="w-10 h-10 text-gray-500 animate-spin" /> : renderUserButton(true)}
+            {!isLoaded ? <Loader2 className="w-10 h-10 text-slate-500 animate-spin" /> : renderUserButton(true)}
           </SheetContent>
         </Sheet>
       </div>

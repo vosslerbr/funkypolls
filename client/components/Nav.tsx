@@ -66,7 +66,7 @@ export default function Nav() {
           <Image src="/logo.png" width={40} height={40} alt="FunkyPolls logo" />
         </Link>
 
-        {!isLoaded ? <Loader2 className="w-10 h-10 text-gray-500 animate-spin" /> : renderUserButton()}
+        {!isLoaded ? <Loader2 className="w-10 h-10 text-slate-500 animate-spin" /> : renderUserButton()}
       </div>
     </nav>
   );

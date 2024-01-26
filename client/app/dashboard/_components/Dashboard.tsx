@@ -10,15 +10,15 @@ import { Status } from "@prisma/client";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { CalendarClock, DoorOpen, Hash, PencilLine } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DataTable } from "../../../components/DataTable";
 import { columns } from "./Columns";
-import { DataTable } from "./DataTable";
 
 /**
  * Maps poll status to color, for consistent styling. Has to be in a tsx file for Tailwind to work.
  */
 export const statusColorMap: { [key in Status]: string } = {
   DRAFT: "bg-violet-100 text-violet-700",
-  OPEN: "bg-green-100 text-green-700",
+  OPEN: "bg-emerald-100 text-emerald-700",
   EXPIRED: "bg-orange-100 text-orange-700",
   ARCHIVED: "bg-rose-100 text-rose-700",
 };
@@ -89,135 +89,127 @@ export default function Dashboard() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <h2 className="text-2xl font-bold">My FunkyPolls</h2>
-      </CardHeader>
+    <div className="text-slate-700">
+      <div className="grid grid-cols-12 gap-4 mb-8">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Card className="col-span-12 sm:col-span-6 lg:col-span-3 border-2 border-violet-100">
+                <CardHeader className={`${statusColorMap.DRAFT} mb-6 rounded-t`}>
+                  <CardTitle>
+                    <div className="flex flex-row justify-between">
+                      Draft <PencilLine className="w-6 h-6" />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center font-bold text-violet-700 text-xl">
+                  <p>{countDraftPolls()}</p>
+                </CardContent>
+              </Card>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.DRAFT}`}>
+                  DRAFT
+                </span>{" "}
+                FunkyPolls can be edited and archived, but not voted on until marked as{" "}
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
+                  OPEN
+                </span>
+                .
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-      <CardContent>
-        <div className="grid grid-cols-12 gap-4 mb-8">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-                  <CardHeader className={`${statusColorMap.DRAFT} mb-6 rounded-t`}>
-                    <CardTitle>
-                      <div className="flex flex-row justify-between">
-                        Draft <PencilLine className="w-6 h-6" />
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{countDraftPolls()}</p>
-                  </CardContent>
-                </Card>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.DRAFT}`}>
-                    DRAFT
-                  </span>{" "}
-                  FunkyPolls can be edited and archived, but not voted on until marked as{" "}
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
-                    OPEN
-                  </span>
-                  .
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Card className="col-span-12 sm:col-span-6 lg:col-span-3  border-2 border-emerald-100">
+                <CardHeader className={`${statusColorMap.OPEN} mb-6 rounded-t`}>
+                  <CardTitle>
+                    <div className="flex flex-row justify-between">
+                      Open <DoorOpen className="w-6 h-6" />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center font-bold text-emerald-700 text-xl">
+                  <p>{countOpenPolls()}</p>
+                </CardContent>
+              </Card>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
+                  OPEN
+                </span>{" "}
+                FunkyPolls cannot be edited or archived, but can be voted on until they expire. Expiration countdown
+                starts when FunkyPoll is marked as{" "}
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
+                  OPEN
+                </span>
+                .
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-                  <CardHeader className={`${statusColorMap.OPEN} mb-6 rounded-t`}>
-                    <CardTitle>
-                      <div className="flex flex-row justify-between">
-                        Open <DoorOpen className="w-6 h-6" />
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{countOpenPolls()}</p>
-                  </CardContent>
-                </Card>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
-                    OPEN
-                  </span>{" "}
-                  FunkyPolls cannot be edited or archived, but can be voted on until they expire. Expiration countdown
-                  starts when FunkyPoll is marked as{" "}
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
-                    OPEN
-                  </span>
-                  .
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Card className="col-span-12 sm:col-span-6 lg:col-span-3  border-2 border-orange-100">
+                <CardHeader className={`${statusColorMap.EXPIRED} mb-6 rounded-t`}>
+                  <CardTitle>
+                    <div className="flex flex-row justify-between">
+                      Expired <CalendarClock className="w-6 h-6" />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center font-bold text-orange-700 text-xl">
+                  <p>{countExpiredPolls()}</p>
+                </CardContent>
+              </Card>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.EXPIRED}`}>
+                  EXPIRED
+                </span>{" "}
+                FunkyPolls cannot be edited or voted on. They can be archived.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-                  <CardHeader className={`${statusColorMap.EXPIRED} mb-6 rounded-t`}>
-                    <CardTitle>
-                      <div className="flex flex-row justify-between">
-                        Expired <CalendarClock className="w-6 h-6" />
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{countExpiredPolls()}</p>
-                  </CardContent>
-                </Card>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.EXPIRED}`}>
-                    EXPIRED
-                  </span>{" "}
-                  FunkyPolls cannot be edited or voted on. They can be archived.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Card className="col-span-12 sm:col-span-6 lg:col-span-3 border-2 border-rose-100">
+                <CardHeader className={`${statusColorMap.ARCHIVED} mb-6 rounded-t`}>
+                  <CardTitle>
+                    <div className="flex flex-row justify-between">
+                      Archived <Hash className="w-6 h-6" />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center font-bold text-rose-700 text-xl">
+                  <p>{countArchivedPolls()}</p>
+                </CardContent>
+              </Card>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.ARCHIVED}`}>
+                  ARCHIVED
+                </span>{" "}
+                FunkyPolls act as though they have been deleted. They cannot be viewed, edited, or voted on.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Card className="col-span-12 sm:col-span-6 lg:col-span-3">
-                  <CardHeader className={`${statusColorMap.ARCHIVED} mb-6 rounded-t`}>
-                    <CardTitle>
-                      <div className="flex flex-row justify-between">
-                        Archived <Hash className="w-6 h-6" />
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{countArchivedPolls()}</p>
-                  </CardContent>
-                </Card>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.ARCHIVED}`}>
-                    ARCHIVED
-                  </span>{" "}
-                  FunkyPolls act as though they have been deleted. They cannot be viewed, edited, or voted on.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-
-        <DataTable columns={columns} data={userPolls} />
-      </CardContent>
-    </Card>
+      <DataTable columns={columns} data={userPolls} />
+    </div>
   );
 }

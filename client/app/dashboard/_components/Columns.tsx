@@ -24,6 +24,7 @@ export const columns: ColumnDef<PollWithLinks>[] = [
       const { poll, links } = row.original;
 
       const allowedToOpen = poll.status === Status.DRAFT;
+      const allowedToVote = poll.status === Status.OPEN;
 
       return (
         <DropdownMenu>
@@ -37,13 +38,18 @@ export const columns: ColumnDef<PollWithLinks>[] = [
             <DropdownMenuItem>
               <Link href={`/dashboard/poll/${poll.id}`}>View Details</Link>
             </DropdownMenuItem>
+
             <DropdownMenuItem>
               <Link href={`/results/${poll.id}`}>View Results</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(links.voteUrl)}>
-              Copy Vote Link
-            </DropdownMenuItem>
 
+            {allowedToVote && (
+              <DropdownMenuItem>
+                <Link href={`/vote/${poll.id}`}>Vote</Link>
+              </DropdownMenuItem>
+            )}
+
+            {/* //TODO lets make this open a new page, strictly for opening a poll, unless I can get a modal working */}
             {allowedToOpen && <DropdownMenuItem>Mark as Open</DropdownMenuItem>}
 
             <DropdownMenuItem onClick={() => navigator.clipboard.writeText(poll.passcode)}>
