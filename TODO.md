@@ -1,0 +1,1 @@
+- figure out a way to strip out all default styling so we can make things more consistent

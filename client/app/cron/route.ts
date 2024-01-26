@@ -18,5 +18,7 @@ export async function POST() {
     },
   });
 
+  // TODO for each poll, alert all websocket connections that the poll has expired
+
   return Response.json({ message: "cron updated statuses" });
 }

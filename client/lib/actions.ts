@@ -1,9 +1,11 @@
 "use server";
 
 import { CreateQuestionFormValues } from "@/app/create/[id]/_helpers/formSetup";
-import { CreatePollFormValues } from "@/app/create/helpers/pollFormSetup";
+import { CreatePollFormValues } from "@/app/create/_helpers/pollFormSetup";
 import { auth } from "@clerk/nextjs";
+import { Expiration, Status } from "@prisma/client";
 import axios from "axios";
+import dayjs from "dayjs";
 import { revalidatePath } from "next/cache";
 import prisma from "./prisma";
 import { PollWithLinks } from "./types";
@@ -150,7 +152,7 @@ export async function getPollById(id: string): Promise<PollWithLinks> {
       },
     });
 
-    if (!poll || poll.status === "ARCHIVED") {
+    if (!poll) {
       throw new Error("Poll not found");
     }
 
@@ -159,6 +161,87 @@ export async function getPollById(id: string): Promise<PollWithLinks> {
     console.error(error);
     throw new Error("This FunkyPoll doesn't seem to exist. Please try again.");
   }
+}
+
+export async function openPoll({
+  pollId,
+  userId,
+  requirePasscode,
+  expiration,
+}: {
+  pollId: string;
+  userId: string;
+  requirePasscode: boolean;
+  expiration: Expiration;
+}) {
+  const { userId: loggedInUserId } = auth();
+
+  if (!userId || userId !== loggedInUserId) {
+    throw new Error("You can only open polls you own");
+  }
+
+  const poll = await prisma.poll.findUnique({
+    where: {
+      id: pollId,
+      userId,
+    },
+  });
+
+  if (!poll) {
+    throw new Error("Poll not found");
+  }
+
+  const expiryMap = {
+    [Expiration.FIVE_MINUTES]: dayjs().add(5, "minute").toISOString(),
+    [Expiration.TEN_MINUTES]: dayjs().add(10, "minute").toISOString(),
+    [Expiration.FIFTEEN_MINUTES]: dayjs().add(15, "minute").toISOString(),
+  };
+
+  await prisma.poll.update({
+    where: {
+      id: pollId,
+    },
+    data: {
+      requirePasscodeToView: requirePasscode,
+      expiration,
+      status: Status.OPEN,
+      expirationDate: expiryMap[expiration],
+    },
+  });
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/poll/${pollId}`);
+}
+
+export async function deletePoll({ pollId, userId }: { pollId: string; userId: string }) {
+  console.log({ pollId, userId });
+
+  const { userId: loggedInUserId } = auth();
+
+  if (!userId || userId !== loggedInUserId) {
+    throw new Error("You can only delete polls you own");
+  }
+
+  // verify that the user owns the poll
+  const poll = await prisma.poll.findUnique({
+    where: {
+      id: pollId,
+      userId,
+    },
+  });
+
+  if (!poll) {
+    throw new Error("Poll not found");
+  }
+
+  // delete the poll
+  await prisma.poll.delete({
+    where: {
+      id: pollId,
+    },
+  });
+
+  revalidatePath("/dashboard");
 }
 
 /**

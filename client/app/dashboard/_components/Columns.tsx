@@ -5,7 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import expirationMap from "@/lib/maps/expirationMap";
@@ -49,19 +48,8 @@ export const columns: ColumnDef<PollWithLinks>[] = [
               </DropdownMenuItem>
             )}
 
-            {/* //TODO lets make this open a new page, strictly for opening a poll, unless I can get a modal working */}
-            {allowedToOpen && <DropdownMenuItem>Mark as Open</DropdownMenuItem>}
-
             <DropdownMenuItem onClick={() => navigator.clipboard.writeText(poll.passcode)}>
               Copy Passcode
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <div>Archive</div>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600 hover:bg-red-200 hover:text-red-600 focus:bg-red-200 focus:text-red-600">
-              <div>Delete</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

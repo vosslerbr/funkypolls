@@ -36,13 +36,6 @@ const questionFormSchema = z.object({
   userId: z.string(),
 });
 
-// ? if the user selects "1 week", the expiration date should be 1 week from time of submission
-const expirationOptions = [
-  { label: "5 minutes", getDate: () => dayjs().add(5, "minutes").toDate() },
-  { label: "10 minutes", getDate: () => dayjs().add(10, "minutes").toDate() },
-  { label: "15 minutes", getDate: () => dayjs().add(15, "minutes").toDate() },
-];
-
 type CreateQuestionFormValues = z.infer<typeof questionFormSchema>;
 
 const defaultValues: CreateQuestionFormValues = {
@@ -52,4 +45,4 @@ const defaultValues: CreateQuestionFormValues = {
   userId: "",
 };
 
-export { currentDate, defaultValues, expirationOptions, questionFormSchema, type CreateQuestionFormValues };
+export { currentDate, defaultValues, questionFormSchema, type CreateQuestionFormValues };

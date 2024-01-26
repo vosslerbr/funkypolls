@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { CreatePollFormValues, defaultValues, pollFormSchema } from "../helpers/pollFormSetup";
+import { CreatePollFormValues, defaultValues, pollFormSchema } from "../_helpers/pollFormSetup";
 
 export default function AddPollForm() {
   const [saving, setSaving] = useState(false);
