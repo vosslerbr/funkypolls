@@ -1,5 +1,6 @@
 "use client";
 
+import PollStatus, { statusColorMap } from "@/components/PollStatus";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -13,21 +14,13 @@ import { useEffect, useState } from "react";
 import { DataTable } from "../../../components/DataTable";
 import { columns } from "./Columns";
 
-/**
- * Maps poll status to color, for consistent styling. Has to be in a tsx file for Tailwind to work.
- */
-export const statusColorMap: { [key in Status]: string } = {
-  DRAFT: "bg-violet-100 text-violet-700",
-  OPEN: "bg-emerald-100 text-emerald-700",
-  EXPIRED: "bg-orange-100 text-orange-700",
-  ARCHIVED: "bg-rose-100 text-rose-700",
-};
-
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [userPolls, setUserPolls] = useState<PollWithLinks[]>([]);
 
   const { user, isLoaded } = useUser();
+
+  const { DRAFT, OPEN, EXPIRED, ARCHIVED } = statusColorMap;
 
   useEffect(() => {
     async function fetchPolls() {
@@ -95,7 +88,7 @@ export default function Dashboard() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Card className="col-span-12 sm:col-span-6 lg:col-span-3 border-2 border-violet-100">
-                <CardHeader className={`${statusColorMap.DRAFT} mb-6 rounded-t`}>
+                <CardHeader className={`${DRAFT} mb-6 rounded-t`}>
                   <CardTitle>
                     <div className="flex flex-row justify-between">
                       Draft <PencilLine className="w-6 h-6" />
@@ -109,14 +102,8 @@ export default function Dashboard() {
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.DRAFT}`}>
-                  DRAFT
-                </span>{" "}
-                FunkyPolls can be edited and archived, but not voted on until marked as{" "}
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
-                  OPEN
-                </span>
-                .
+                <PollStatus status="DRAFT" /> FunkyPolls can be edited and archived, but not voted on until marked as{" "}
+                <PollStatus status="OPEN" />.
               </p>
             </TooltipContent>
           </Tooltip>
@@ -126,7 +113,7 @@ export default function Dashboard() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Card className="col-span-12 sm:col-span-6 lg:col-span-3  border-2 border-emerald-100">
-                <CardHeader className={`${statusColorMap.OPEN} mb-6 rounded-t`}>
+                <CardHeader className={`${OPEN} mb-6 rounded-t`}>
                   <CardTitle>
                     <div className="flex flex-row justify-between">
                       Open <DoorOpen className="w-6 h-6" />
@@ -140,15 +127,8 @@ export default function Dashboard() {
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
-                  OPEN
-                </span>{" "}
-                FunkyPolls cannot be edited or archived, but can be voted on until they expire. Expiration countdown
-                starts when FunkyPoll is marked as{" "}
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
-                  OPEN
-                </span>
-                .
+                <PollStatus status="OPEN" /> FunkyPolls cannot be edited or archived, but can be voted on until they
+                expire. Expiration countdown starts when FunkyPoll is marked as <PollStatus status="OPEN" />.
               </p>
             </TooltipContent>
           </Tooltip>
@@ -158,7 +138,7 @@ export default function Dashboard() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Card className="col-span-12 sm:col-span-6 lg:col-span-3  border-2 border-orange-100">
-                <CardHeader className={`${statusColorMap.EXPIRED} mb-6 rounded-t`}>
+                <CardHeader className={`${EXPIRED} mb-6 rounded-t`}>
                   <CardTitle>
                     <div className="flex flex-row justify-between">
                       Expired <CalendarClock className="w-6 h-6" />
@@ -172,10 +152,7 @@ export default function Dashboard() {
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.EXPIRED}`}>
-                  EXPIRED
-                </span>{" "}
-                FunkyPolls cannot be edited or voted on. They can be archived.
+                <PollStatus status="EXPIRED" /> FunkyPolls cannot be edited or voted on. They can be archived.
               </p>
             </TooltipContent>
           </Tooltip>
@@ -185,7 +162,7 @@ export default function Dashboard() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Card className="col-span-12 sm:col-span-6 lg:col-span-3 border-2 border-rose-100">
-                <CardHeader className={`${statusColorMap.ARCHIVED} mb-6 rounded-t`}>
+                <CardHeader className={`${ARCHIVED} mb-6 rounded-t`}>
                   <CardTitle>
                     <div className="flex flex-row justify-between">
                       Archived <Hash className="w-6 h-6" />
@@ -199,10 +176,8 @@ export default function Dashboard() {
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.ARCHIVED}`}>
-                  ARCHIVED
-                </span>{" "}
-                FunkyPolls act as though they have been deleted. They cannot be viewed, edited, or voted on.
+                <PollStatus status="ARCHIVED" /> FunkyPolls act as though they have been deleted. They cannot be viewed,
+                edited, or voted on.
               </p>
             </TooltipContent>
           </Tooltip>

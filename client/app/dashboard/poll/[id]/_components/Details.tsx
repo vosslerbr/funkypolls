@@ -1,7 +1,8 @@
 "use client";
 
-import { statusColorMap } from "@/app/dashboard/_components/Dashboard";
+import CopyButton from "@/components/CopyButton";
 import { Loading } from "@/components/Loading";
+import PollStatus from "@/components/PollStatus";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,51 +26,17 @@ import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Expiration, Status } from "@prisma/client";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import {
-  CalendarClock,
-  Check,
-  Copy,
-  DoorOpen,
-  HelpCircle,
-  KeyRound,
-  PencilLine,
-  Settings2,
-  Trash2,
-} from "lucide-react";
+import { CalendarClock, DoorOpen, HelpCircle, KeyRound, PencilLine, Settings2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { OpenPollFormValues, defaultValues, openPollFormSchema } from "../_helpers/openPollFormSetup";
 
 export default function Details({ data }: { data: PollWithLinks }) {
-  const [copiedPasscode, setCopiedPasscode] = useState(false);
-
   const { user, isLoaded } = useUser();
 
   const router = useRouter();
 
   const form = useForm<OpenPollFormValues>({ resolver: zodResolver(openPollFormSchema), defaultValues });
-
-  // TODO refactor this to be reusable. Also currently used in dashboard table
-  function renderStatus({ poll }: PollWithLinks) {
-    const { status } = poll;
-
-    return (
-      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap[status]}`}>
-        {status}
-      </span>
-    );
-  }
-
-  useEffect(() => {
-    if (copiedPasscode) {
-      const timeout = setTimeout(() => {
-        setCopiedPasscode(false);
-      }, 1500);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [copiedPasscode]);
 
   async function handleDeleteClick() {
     try {
@@ -107,11 +74,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
       <div className="mb-8 flex flex-row gap-4">
         {data.poll.status === Status.OPEN && (
           <p>
-            This poll is{" "}
-            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap.OPEN}`}>
-              OPEN
-            </span>
-            , so it cannot currently be changed.
+            This poll is <PollStatus status="OPEN" />, so it cannot currently be changed.
           </p>
         )}
 
@@ -234,24 +197,7 @@ export default function Details({ data }: { data: PollWithLinks }) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p
-                  className="flex flex-row items-center cursor-pointer"
-                  onClick={() => {
-                    navigator.clipboard.writeText(data.poll.passcode);
-                    setCopiedPasscode(true);
-                  }}>
-                  {copiedPasscode ? (
-                    <>
-                      Copied!
-                      <Check className="ml-2 h-4 w-4 text-slate-400" />
-                    </>
-                  ) : (
-                    <>
-                      {data.poll.passcode}
-                      <Copy className="ml-2 h-4 w-4 text-slate-400" />
-                    </>
-                  )}
-                </p>
+                <CopyButton copyTitle={data.poll.passcode} copyData={data.poll.passcode} />
               </CardContent>
             </Card>
             <Card className="col-span-12 sm:col-span-6 lg:col-span-4">
@@ -262,7 +208,9 @@ export default function Details({ data }: { data: PollWithLinks }) {
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent>{renderStatus(data)}</CardContent>
+              <CardContent>
+                <PollStatus status={data.poll.status} />
+              </CardContent>
             </Card>
             <Card className="col-span-12 sm:col-span-6 lg:col-span-4">
               <CardHeader>

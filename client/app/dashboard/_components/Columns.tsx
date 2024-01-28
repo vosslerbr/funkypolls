@@ -1,5 +1,6 @@
 "use client";
 
+import PollStatus from "@/components/PollStatus";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,7 +15,6 @@ import { Status } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { statusColorMap } from "./Dashboard";
 
 export const columns: ColumnDef<PollWithLinks>[] = [
   {
@@ -74,11 +74,7 @@ export const columns: ColumnDef<PollWithLinks>[] = [
     cell: ({ row }) => {
       const status: Status = row.getValue("status");
 
-      return (
-        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded ${statusColorMap[status]}`}>
-          {status}
-        </span>
-      );
+      return <PollStatus status={status} />;
     },
     header: ({ column }) => {
       return (
