@@ -2,7 +2,7 @@ import { Expiration } from "@prisma/client";
 import { z } from "zod";
 
 const openPollFormSchema = z.object({
-  expiration: z.string(),
+  expiration: z.enum([Expiration.FIVE_MINUTES, Expiration.TEN_MINUTES, Expiration.FIFTEEN_MINUTES]),
   requirePasscode: z.boolean(),
   userId: z.string(),
 });

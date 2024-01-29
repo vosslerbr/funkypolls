@@ -276,5 +276,5 @@ export async function handleAnswerQuestion({
   });
 
   // TODO we'll need to update socket server to handle this at a question level, i'd say
-  await axios.post(`${process.env.WS_SERVER_BASE_URL}/api/v1/newvote/${pollId}`);
+  await axios.post(`${process.env.WS_SERVER_BASE_URL}/api/v1/new-vote/${pollId}`);
 }

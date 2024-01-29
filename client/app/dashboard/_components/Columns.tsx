@@ -125,38 +125,14 @@ export const columns: ColumnDef<PollWithLinks>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: "poll.id",
-  //   cell: ({ row }) => {
-  //     const poll: PollWithoutLinks = row.getValue("poll");
+  {
+    id: "votes",
+    accessorFn: (row) =>
+      row.poll.questions.reduce((acc, question) => {
+        const total = question.options.reduce((voteCount, option) => voteCount + option.votes, 0);
 
-  //     return (
-  //       <Button className="bg-gradient-to-r from-violet-700 to-purple-500" asChild>
-  //         <Link href={`/vote/${poll.id}`}>
-  //           Vote
-  //           <ExternalLinkIcon className="ml-2 h-4 w-4" />
-  //         </Link>
-  //       </Button>
-  //     );
-  //   },
-  //   header: "",
-  //   id: "vote_link",
-  // },
-  // {
-  //   accessorKey: "poll.id",
-  //   cell: ({ row }) => {
-  //     const poll: PollWithoutLinks = row.getValue("poll");
-
-  //     return (
-  //       <Link href={`/results/${poll.id}`}>
-  //         <Button className="bg-gradient-to-r from-violet-700 to-purple-500">
-  //           Results
-  //           <ExternalLinkIcon className="ml-2 h-4 w-4" />
-  //         </Button>
-  //       </Link>
-  //     );
-  //   },
-  //   header: "",
-  //   id: "results_link",
-  // },
+        return acc + total;
+      }, 0),
+    header: "Votes",
+  },
 ];

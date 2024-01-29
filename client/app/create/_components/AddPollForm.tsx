@@ -41,10 +41,12 @@ export default function AddPollForm() {
         description: addQuestion ? "Your FunkyPoll has been created." : "Your FunkyPoll has been saved as a draft.",
       });
 
-      form.reset();
-
       // if we are adding questions, redirect to the create page for the questions
-      if (addQuestion) router.push(`/create/${pollId}`);
+      if (addQuestion) {
+        router.push(`/create/${pollId}`);
+      } else {
+        router.push(`/dashboard`);
+      }
     } catch (error) {
       console.error(error);
 
